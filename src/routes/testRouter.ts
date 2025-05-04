@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { v4 as uuidv4 } from "uuid";
 import { Session } from "@jcs224/hono-sessions";
-import type { SessionDataTypes } from "@/app.ts";
+import type { SessionDataTypes } from "../app.ts";
 
 export const testRouter = new Hono<{
   Variables: {

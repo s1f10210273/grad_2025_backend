@@ -1,10 +1,10 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { config } from "@/helpers/env.ts";
-import { testRouter } from "@/routes/testRouter.ts";
+import { config } from "@/helpers/env";
+import { testRouter } from "@/routes/testRouter";
 import { Session, sessionMiddleware, CookieStore } from "@jcs224/hono-sessions";
-import { sessionExpirationTime } from "@/helpers/const.ts";
-import type { sessionRole } from "./types/roleTypes.ts";
+import { sessionExpirationTime } from "@/helpers/const";
+import type { sessionRole } from "@/types/roleTypes.ts";
 
 export type SessionDataTypes = {
   uuid: string;

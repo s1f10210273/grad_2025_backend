@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
     "target": "ESNext",
-    "module": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "strict": true,
-    "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "types": ["node"],
     "jsx": "react-jsx",
@@ -13,8 +11,11 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["src/*"] // src フォルダを指すように修正
     }
   },
+  "include": [
+    "src/**/*.ts" // src フォルダ内のすべての TypeScript ファイルを対象
+  ],
   "exclude": ["node_modules", "dist"]
 }
