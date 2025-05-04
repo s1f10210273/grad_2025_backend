@@ -6,7 +6,7 @@ import { Session, sessionMiddleware, CookieStore } from "@jcs224/hono-sessions";
 import { sessionExpirationTime } from "@/helpers/const.ts";
 import type { sessionRole } from "./types/roleTypes.ts";
 
-type SessionDataTypes = {
+export type SessionDataTypes = {
   uuid: string;
   role: sessionRole;
   expirationTime: number;
