@@ -12,3 +12,5 @@ serve({
   fetch: app.fetch,
   port: config.port as number,
 });
+
+console.log(`app is run on http://localhost:${config.port}`);
