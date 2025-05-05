@@ -1,9 +1,15 @@
+version: "3.8"
+
 services:
   app:
     build: .
     ports:
       - "3000:3000"
       - "9229:9229"
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./package.json:/usr/src/app/package.json
+      - ./tsconfig.json:/usr/src/app/tsconfig.json
     depends_on:
       - db
     environment:
@@ -12,6 +18,7 @@ services:
       - MYSQL_DATABASE=my_dbname
       - MYSQL_USER=my_db_username
       - MYSQL_PASSWORD=my_db_password
+    command: npm run dev
   db:
     image: mysql:8.0
     environment:
@@ -29,7 +36,6 @@ services:
     depends_on:
       - app
     volumes:
-      - ./node_modules:/app/node_modules
       - .:/app
 volumes:
   db_data: {}
