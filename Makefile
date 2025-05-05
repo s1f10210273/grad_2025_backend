@@ -54,7 +54,7 @@ sh:
 # MySQLコンテナに接続
 .PHONY: mysql
 mysql:
-	docker-compose exec mysql mysql -u grad_user -pgrad_password grad_db
+	docker-compose exec db mysql -u my_db_username -pmy_db_password my_dbname
 
 # データベースマイグレーションを実行
 .PHONY: migrate
