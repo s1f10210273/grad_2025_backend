@@ -12,6 +12,7 @@
     "@hono/swagger-ui": "^0.5.1",
     "@hono/zod-openapi": "^0.19.6",
     "@jcs224/hono-sessions": "npm:@jsr/jcs224__hono-sessions@^0.7.2",
+    "bcryptjs": "^3.0.2",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.43.1",
     "drizzle-zod": "^0.7.1",

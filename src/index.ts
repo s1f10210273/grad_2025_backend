@@ -7,6 +7,7 @@ import { Session, sessionMiddleware, CookieStore } from "@jcs224/hono-sessions";
 import { sessionExpirationTime } from "./helpers/const.js";
 import type { sessionRole } from "./types/roleTypes.js";
 import { userRouter } from "./routes/userRouter.js";
+import { openApiUserTag } from "./routes/openapi/userRoute.js";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -61,12 +62,7 @@ app.doc("/api-docs", {
       description: "開発サーバー",
     },
   ],
-  tags: [
-    {
-      name: "user",
-      description: "ユーザー管理に関連するAPI",
-    },
-  ],
+  tags: [openApiUserTag],
 });
 
 // APIインデックスページ

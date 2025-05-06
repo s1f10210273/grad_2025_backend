@@ -1,9 +1,11 @@
 import type { Context } from "hono";
 import { Session } from "@jcs224/hono-sessions";
 import type { SessionDataTypes } from "../index.js";
-import { userInsertSchema } from "../db/user.js";
-import { registerUser } from "../models/userModel.js";
+import { userInsertSchema, type UserInsert } from "../db/user.js";
+import { findUserByEmail, registerUser } from "../models/userModel.js";
 import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcryptjs";
+import { sessionExpirationTime } from "../helpers/const.js";
 
 type UserContext = Context<{
   Variables: {
@@ -12,25 +14,98 @@ type UserContext = Context<{
 }>;
 
 export async function userRegister(c: UserContext) {
-  try {
-    const body = await c.req.json();
-    const uuid = uuidv4();
-    const userData = userInsertSchema.parse({ ...body, uuid });
+  const body = await c.req.json();
+  const name: string = body.name;
+  const address: string = body.address;
+  const email: string = body.email;
+  const password: string = body.password;
 
-    await registerUser(userData);
+  try {
+    const storeId = uuidv4();
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const store: UserInsert = {
+      uuid: storeId,
+      name: name,
+      address: address,
+      email: email,
+      password: hashedPassword,
+    };
+
+    await registerUser(store);
 
     const session = await c.get("session");
-    await session.set("uuid", userData.uuid);
+    await session.set("uuid", store.uuid);
     await session.set("role", "user");
+    await session.set("expirationTime", Date.now() + sessionExpirationTime);
 
     return c.json(
       {
         message: "user registered successfully",
-        userId: userData.uuid,
+        userId: store.uuid,
       },
       201
     );
-  } catch (error) {
+  } catch (e) {
+    console.error(e);
+    return c.json(
+      {
+        message: "Internal server error",
+      },
+      500
+    );
+  }
+}
+
+export async function userLogin(c: UserContext) {
+  const session = await c.get("session");
+  console.log("session", session.get("uuid"));
+  // if (session.get("uuid")) {
+  //   return c.json(
+  //     {
+  //       message: "User is already logged in",
+  //     },
+  //     400
+  //   );
+  // }
+
+  try {
+    const body = await c.req.json();
+    const email: string = body.email;
+    const password: string = body.password;
+
+    const store = await findUserByEmail(email);
+    if (!store) {
+      return c.json(
+        {
+          message: "Invalid email",
+        },
+        400
+      );
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, store.password);
+    if (isPasswordValid) {
+      await session.set("uuid", store.uuid);
+      await session.set("role", "user");
+      await session.set("expirationTime", Date.now() + sessionExpirationTime);
+      return c.json(
+        {
+          message: "Login successful",
+          userId: store.uuid,
+        },
+        200
+      );
+    } else {
+      return c.json(
+        {
+          message: "Invalid email or password",
+        },
+        400
+      );
+    }
+  } catch (e) {
+    console.error(e);
     return c.json(
       {
         message: "Internal server error",

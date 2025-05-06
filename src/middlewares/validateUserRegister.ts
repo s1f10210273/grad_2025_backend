@@ -1,12 +1,12 @@
 import type { MiddlewareHandler } from "hono";
-import { userApiSchema } from "../schemas/user.js";
+import { userRegisterApiSchema } from "../schemas/user.js";
 import { existsUserByEmail, existsUserByName } from "../models/userModel.js";
 
 export const validateUserRegister: MiddlewareHandler = async (c, next) => {
   try {
     const body = await c.req.json();
 
-    const validationResult = userApiSchema.safeParse(body);
+    const validationResult = userRegisterApiSchema.safeParse(body);
     if (!validationResult.success) {
       return c.json(
         {

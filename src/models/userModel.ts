@@ -6,7 +6,7 @@ export const findUserByEmail = async (email: string) => {
   const [user] = await db
     .select()
     .from(usersTable)
-    .where(eq(usersTable.email, email) && isNull(usersTable.deleted_at))
+    .where(and(eq(usersTable.email, email) && isNull(usersTable.deleted_at)))
     .limit(1);
   return user;
 };
