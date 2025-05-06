@@ -5,7 +5,9 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "playwright test"
+    "test": "playwright test",
+    "format": "npx @biomejs/biome format --write src/**/*.ts",
+    "lint": "npx @biomejs/biome lint --write src/**/*.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.1",
@@ -22,6 +24,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@playwright/test": "^1.50.0",
     "@types/node": "^20.11.17",
     "drizzle-kit": "^0.31.1",
