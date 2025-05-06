@@ -1,26 +1,44 @@
-import type { MiddlewareHandler } from "hono";
+import type { Session } from "@jcs224/hono-sessions";
+import type { Context } from "hono";
 import { sessionExpirationTime } from "../helpers/const.js";
+import type { SessionDataTypes } from "../index.js";
 
-export const userCheckAuth: MiddlewareHandler = async (c, next) => {
-	const session = await c.get("session");
+type UserContext = Context<{
+	Variables: {
+		session: Session<SessionDataTypes>;
+	};
+}>;
 
-	const uuid = session.get("uuid");
-	const role = session.get("role");
-	const expirationTime = session.get("expirationTime");
+export const userCheckAuth = async (c:UserContext) => {
+  const session = await c.get("session");
 
-	const now = Date.now();
+  if (!session) {
+    return c.json({ message: "Unauthorized" }, 401);
+  }
 
-	if (
-		!uuid ||
-		!role ||
-		!expirationTime ||
-		role !== "user" ||
-		expirationTime < now
-	) {
-		session.deleteSession();
-		return c.json({ message: "Unauthorized" }, 401);
-	}
+  const uuid = session.get("uuid");
+  const role = session.get("role");
+  const expirationTime = session.get("expirationTime");
 
-	session.set("expirationTime", now + sessionExpirationTime);
-	next();
+  const now = Date.now();
+
+  if (
+    !uuid ||
+    !role ||
+    !expirationTime ||
+    role !== "user" ||
+    expirationTime < now
+  ) {
+		try {
+    session.deleteSession();
+    return c.json({ message: "Unauthorized" }, 401);
+		} catch (e) {
+			console.error(e);
+			return c.json({ message: "Internal server error" }, 500);
+		}
+  }
+
+  session.set("expirationTime", now + sessionExpirationTime);
+	return null;
+
 };

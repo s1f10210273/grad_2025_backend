@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { UserInsert } from "../db/user.js";
 import { sessionExpirationTime } from "../helpers/const.js";
 import type { SessionDataTypes } from "../index.js";
+import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 import { findUserByEmail, registerUser } from "../models/userModel.js";
 
 type UserContext = Context<{
@@ -115,6 +116,10 @@ export async function userLogin(c: UserContext) {
 }
 
 export async function userLogout(c: UserContext) {
+	const authResponse = await userCheckAuth(c);
+  if (authResponse) {
+    return authResponse;  // 認証に失敗した場合はそのままレスポンスを返す
+  }
 	const session = await c.get("session");
 
 	try {
