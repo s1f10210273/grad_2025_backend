@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.14.1",
+    "@hono/swagger-ui": "^0.5.1",
     "@hono/zod-openapi": "^0.19.6",
     "@jcs224/hono-sessions": "npm:@jsr/jcs224__hono-sessions@^0.7.2",
     "dotenv": "^16.5.0",

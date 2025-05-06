@@ -1,10 +1,12 @@
 import { serve } from "@hono/node-server";
-import { Hono } from "hono";
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
+import { swaggerUI } from "@hono/swagger-ui";
 import { config } from "./helpers/env.js";
 import { testRouter } from "./routes/testRouter.js";
 import { Session, sessionMiddleware, CookieStore } from "@jcs224/hono-sessions";
 import { sessionExpirationTime } from "./helpers/const.js";
 import type { sessionRole } from "./types/roleTypes.js";
+import { userRouter } from "./routes/userRouter.js";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -12,7 +14,7 @@ export type SessionDataTypes = {
   expirationTime: number;
 };
 
-const app = new Hono<{
+const app = new OpenAPIHono<{
   Variables: {
     session: Session<SessionDataTypes>;
   };
@@ -40,7 +42,62 @@ app.get("/", (c) => {
   return c.text("Hello Hono!!");
 });
 
+// ここにAPIを追加していく
 app.route("/test", testRouter);
+app.route("/api/users", userRouter);
+
+// OpenAPIの設定
+app.get("/swagger", swaggerUI({ url: "/api-docs" }));
+
+app.doc("/api-docs", {
+  openapi: "3.0.0",
+  info: {
+    title: "Grad 2025 Backend API",
+    version: "1.0.0",
+  },
+  servers: [
+    {
+      url: `http://localhost:${config.port}`,
+      description: "開発サーバー",
+    },
+  ],
+  tags: [
+    {
+      name: "user",
+      description: "ユーザー管理に関連するAPI",
+    },
+  ],
+});
+
+// APIインデックスページ
+app.get("/api", (c) => {
+  return c.html(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>API Documentation</title>
+        <style>
+          body { font-family: sans-serif; margin: 0; padding: 20px; line-height: 1.6; }
+          .container { max-width: 800px; margin: 0 auto; }
+          h1 { color: #333; }
+          .card { border: 1px solid #ddd; border-radius: 4px; padding: 15px; margin-bottom: 20px; }
+          a { color: #0066cc; text-decoration: none; }
+          a:hover { text-decoration: underline; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>API Documentation</h1>
+          <div class="card">
+            <h2>API仕様</h2>
+            <p><a href="/swagger" target="_blank">Swagger UI</a></p>
+            <p><a href="/api-docs" target="_blank">OpenAPI仕様 (JSON)</a></p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `);
+});
 
 serve({
   fetch: app.fetch,
@@ -48,3 +105,5 @@ serve({
 });
 
 console.log(`app is run on http://localhost:${config.port}`);
+console.log(`API Documentation: http://localhost:${config.port}/api`);
+console.log(`Swagger UI: http://localhost:${config.port}/swagger`);
