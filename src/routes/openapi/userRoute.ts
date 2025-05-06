@@ -1,7 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
-  userRegisterApiSchema,
   userLoginApiSchema,
+  userRegisterApiSchema,
 } from "../../schemas/user.js";
 
 export const openApiUserTag = {

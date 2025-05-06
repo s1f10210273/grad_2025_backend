@@ -1,6 +1,6 @@
-import { mysqlTable, varchar, timestamp } from "drizzle-orm/mysql-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import type { z } from "@hono/zod-openapi";
+import { mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const usersTable = mysqlTable("users", {
 	uuid: varchar("uuid", { length: 36 }).primaryKey(),

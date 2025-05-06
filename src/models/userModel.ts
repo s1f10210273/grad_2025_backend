@@ -1,6 +1,6 @@
-import { type UserInsert, usersTable } from "../db/user.js";
 import { and, eq, isNull } from "drizzle-orm";
 import { db } from "../db.js";
+import { type UserInsert, usersTable } from "../db/user.js";
 
 export const findUserByEmail = async (email: string) => {
 	const [user] = await db

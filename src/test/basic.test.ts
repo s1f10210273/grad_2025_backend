@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("APIテスト", () => {
 	test("ルートエンドポイントが正常に応答する", async ({ request }) => {

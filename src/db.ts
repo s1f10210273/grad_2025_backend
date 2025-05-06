@@ -1,6 +1,6 @@
+import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import { config } from "./helpers/env.js";
-import { drizzle } from "drizzle-orm/mysql2";
 
 export const pool = mysql.createPool({
   host: config.db.host || "localhost",

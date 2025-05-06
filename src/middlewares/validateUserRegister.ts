@@ -1,6 +1,6 @@
 import type { MiddlewareHandler } from "hono";
-import { userRegisterApiSchema } from "../schemas/user.js";
 import { existsUserByEmail, existsUserByName } from "../models/userModel.js";
+import { userRegisterApiSchema } from "../schemas/user.js";
 
 export const validateUserRegister: MiddlewareHandler = async (c, next) => {
 	try {

@@ -1,18 +1,18 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import type { Session } from "@jcs224/hono-sessions";
-import type { SessionDataTypes } from "../index.js";
 import {
 	userLogin,
-	userRegister,
 	userLogout,
+	userRegister,
 } from "../controllers/userController.js";
+import type { SessionDataTypes } from "../index.js";
+import { userCheckAuth } from "../middlewares/userCheckAuth.js";
+import { validateUserRegister } from "../middlewares/validateUserRegister.js";
 import {
-	registerUserRoute,
 	loginRoute,
 	logoutRoute,
+	registerUserRoute,
 } from "./openapi/userRoute.js";
-import { validateUserRegister } from "../middlewares/validateUserRegister.js";
-import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 
 export const userRouter = new OpenAPIHono<{
 	Variables: {
