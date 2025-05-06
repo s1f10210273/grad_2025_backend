@@ -30,7 +30,6 @@ services:
       - MYSQL_PASSWORD=my_db_password
     volumes:
       - db_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./my.cnf:/etc/mysql/conf.d/my.cnf
   test:
     build: .

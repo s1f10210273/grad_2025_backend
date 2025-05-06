@@ -54,7 +54,7 @@ sh:
 # MySQLコンテナに接続
 .PHONY: mysql
 mysql:
-	docker-compose exec db mysql -u my_db_username -pmy_db_password my_dbname
+	docker-compose exec db mysql -h db -u my_db_username -pmy_db_password my_dbname
 
 
 # マイグレーションファイルを作成
@@ -89,5 +89,4 @@ test-ui:
 # 未使用のDockerリソースをクリーンアップ
 .PHONY: clean
 clean:
-	docker system prune -f
-	docker volume prune -f
+	docker volume rm grad_2025_backend_db_data
