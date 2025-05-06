@@ -8,6 +8,13 @@
       "when": 1746502075995,
       "tag": "0000_create-user",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1746532153283,
+      "tag": "0001_create-store",
+      "breakpoints": true
     }
   ]
 }

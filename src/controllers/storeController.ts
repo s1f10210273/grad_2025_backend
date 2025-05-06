@@ -2,21 +2,20 @@ import type { Session } from "@jcs224/hono-sessions";
 import bcrypt from "bcryptjs";
 import type { Context } from "hono";
 import { v4 as uuidv4 } from "uuid";
-import type { UserInsert } from "../db/user.js";
+import type { StoreInsert } from "../db/store.js";
 import { sessionExpirationTime } from "../helpers/const.js";
 import type { SessionDataTypes } from "../index.js";
-import { findUserByEmail, registerUser } from "../models/userModel.js";
+import { findStoreByEmail, registerStore } from "../models/storeModel.js";
 
-type UserContext = Context<{
+type StoreContext = Context<{
 	Variables: {
 		session: Session<SessionDataTypes>;
 	};
 }>;
 
-export async function userRegister(c: UserContext) {
+export async function storeRegister(c: StoreContext) {
 	const body = await c.req.json();
 	const name: string = body.name;
-	const address: string = body.address;
 	const email: string = body.email;
 	const password: string = body.password;
 
@@ -24,24 +23,23 @@ export async function userRegister(c: UserContext) {
 		const storeId = uuidv4();
 		const salt = await bcrypt.genSalt();
 		const hashedPassword = await bcrypt.hash(password, salt);
-		const store: UserInsert = {
+		const store: StoreInsert = {
 			uuid: storeId,
 			name: name,
-			address: address,
 			email: email,
 			password: hashedPassword,
 		};
 
-		await registerUser(store);
+		await registerStore(store);
 
 		const session = await c.get("session");
 		await session.set("uuid", store.uuid);
-		await session.set("role", "user");
+		await session.set("role", "store");
 		await session.set("expirationTime", Date.now() + sessionExpirationTime);
 
 		return c.json(
 			{
-				message: "user registered successfully",
+				message: "store registered successfully",
 				userId: store.uuid,
 			},
 			201,
@@ -57,7 +55,7 @@ export async function userRegister(c: UserContext) {
 	}
 }
 
-export async function userLogin(c: UserContext) {
+export async function storeLogin(c: StoreContext) {
 	const session = await c.get("session");
 	if (session.get("uuid")) {
 		console.log("session", session.get("uuid"));
@@ -74,7 +72,7 @@ export async function userLogin(c: UserContext) {
 		const email: string = body.email;
 		const password: string = body.password;
 
-		const store = await findUserByEmail(email);
+		const store = await findStoreByEmail(email);
 		if (!store) {
 			return c.json(
 				{
@@ -87,7 +85,7 @@ export async function userLogin(c: UserContext) {
 		const isPasswordValid = await bcrypt.compare(password, store.password);
 		if (isPasswordValid) {
 			await session.set("uuid", store.uuid);
-			await session.set("role", "user");
+			await session.set("role", "store");
 			await session.set("expirationTime", Date.now() + sessionExpirationTime);
 			return c.json(
 				{
@@ -114,7 +112,7 @@ export async function userLogin(c: UserContext) {
 	}
 }
 
-export async function userLogout(c: UserContext) {
+export async function storeLogout(c: StoreContext) {
 	const session = await c.get("session");
 
 	try {

@@ -1,13 +1,15 @@
 import { serve } from "@hono/node-server";
-import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
-import { config } from "./helpers/env.js";
-import { testRouter } from "./routes/testRouter.js";
-import { Session, sessionMiddleware, CookieStore } from "@jcs224/hono-sessions";
-import { openApiUserTag } from "./routes/openapi/userRoute.js";
+import { OpenAPIHono } from "@hono/zod-openapi";
+import { CookieStore, Session, sessionMiddleware } from "@jcs224/hono-sessions";
 import { sessionExpirationTime } from "./helpers/const.js";
-import type { sessionRole } from "./types/roleTypes.js";
+import { config } from "./helpers/env.js";
+import { openApiStoreTag } from "./routes/openapi/storeRoute.js";
+import { openApiUserTag } from "./routes/openapi/userRoute.js";
+import { storeRouter } from "./routes/storeRouter.js";
+import { testRouter } from "./routes/testRouter.js";
 import { userRouter } from "./routes/userRouter.js";
+import type { sessionRole } from "./types/roleTypes.js";
 
 
 export type SessionDataTypes = {
@@ -47,6 +49,7 @@ app.get("/", (c) => {
 // ここにAPIを追加していく
 app.route("/test", testRouter);
 app.route("/api/users", userRouter);
+app.route("/api/stores", storeRouter);
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));
@@ -63,7 +66,7 @@ app.doc("/api-docs", {
       description: "開発サーバー",
     },
   ],
-  tags: [openApiUserTag],
+  tags: [openApiUserTag, openApiStoreTag],
 });
 
 // APIインデックスページ

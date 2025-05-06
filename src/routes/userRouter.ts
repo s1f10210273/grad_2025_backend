@@ -30,5 +30,5 @@ userRouter.openapi(registerUserRoute, userRegister);
 userRouter.openapi(loginRoute, userLogin);
 
 // /login
-userRouter.use("/login", userCheckAuth);
+userRouter.use("/logout", userCheckAuth);
 userRouter.openapi(logoutRoute, userLogout);

@@ -1,7 +1,7 @@
 import type { MiddlewareHandler } from "hono";
 import { sessionExpirationTime } from "../helpers/const.js";
 
-export const userCheckAuth: MiddlewareHandler = async (c, next) => {
+export const storeCheckAuth: MiddlewareHandler = async (c, next) => {
 	const session = await c.get("session");
 
 	const uuid = session.get("uuid");
@@ -14,7 +14,7 @@ export const userCheckAuth: MiddlewareHandler = async (c, next) => {
 		!uuid ||
 		!role ||
 		!expirationTime ||
-		role !== "user" ||
+		role !== "store" ||
 		expirationTime < now
 	) {
 		session.deleteSession();
