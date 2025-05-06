@@ -121,3 +121,44 @@ export const loginRoute = createRoute({
   summary: "userのログイン",
   description: "メールアドレスとパスワードでログインを行います",
 });
+
+export const logoutRoute = createRoute({
+  method: "post",
+  path: "/logout",
+  request: {},
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Logout successful",
+    },
+    401: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Unauthorized",
+    },
+    500: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Internal server error",
+    },
+  },
+  tags: [openApiUserTag.name],
+  summary: "userのログアウト",
+  description: "ログアウトを行います",
+});

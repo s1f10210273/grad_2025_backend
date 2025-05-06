@@ -59,15 +59,15 @@ export async function userRegister(c: UserContext) {
 
 export async function userLogin(c: UserContext) {
   const session = await c.get("session");
-  console.log("session", session.get("uuid"));
-  // if (session.get("uuid")) {
-  //   return c.json(
-  //     {
-  //       message: "User is already logged in",
-  //     },
-  //     400
-  //   );
-  // }
+  if (session.get("uuid")) {
+    console.log("session", session.get("uuid"));
+    return c.json(
+      {
+        message: "User is already logged in",
+      },
+      400
+    );
+  }
 
   try {
     const body = await c.req.json();
@@ -104,6 +104,28 @@ export async function userLogin(c: UserContext) {
         400
       );
     }
+  } catch (e) {
+    console.error(e);
+    return c.json(
+      {
+        message: "Internal server error",
+      },
+      500
+    );
+  }
+}
+
+export async function userLogout(c: UserContext) {
+  const session = await c.get("session");
+
+  try {
+    session.deleteSession();
+    return c.json(
+      {
+        message: "Logged out",
+      },
+      200
+    );
   } catch (e) {
     console.error(e);
     return c.json(
