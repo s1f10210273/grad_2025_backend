@@ -19,7 +19,8 @@ export const registerUserRoute = createRoute({
         "application/json": {
           schema: z.object({
             message: z.string(),
-            userId: z.number(),
+            // todo:いらないかも！！！
+            userId: z.string(),
           }),
         },
       },

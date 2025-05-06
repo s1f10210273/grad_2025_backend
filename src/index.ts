@@ -1,5 +1,5 @@
 import { serve } from "@hono/node-server";
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
+import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
 import { config } from "./helpers/env.js";
 import { testRouter } from "./routes/testRouter.js";

@@ -1,5 +1,6 @@
 import type { MiddlewareHandler } from "hono";
 import { userApiSchema } from "../schemas/user.js";
+import { existsUserByEmail, existsUserByName } from "../models/userModel.js";
 
 export const validateUserRegister: MiddlewareHandler = async (c, next) => {
   try {
@@ -16,23 +17,23 @@ export const validateUserRegister: MiddlewareHandler = async (c, next) => {
       );
     }
 
-    // todo: emailの確認
-    const isEmailUsed = false;
-    if (isEmailUsed) {
+    // nameの重複チェック
+    const isNameUsed = await existsUserByName(body.name);
+    if (isNameUsed) {
       return c.json(
         {
-          message: "This email is already used",
+          message: "This name is already used",
         },
         422
       );
     }
 
-    // todo: nameの確認
-    const isNameUsed = false;
-    if (isNameUsed) {
+    // emailの重複チェック
+    const isEmailUsed = await existsUserByEmail(body.email);
+    if (isEmailUsed) {
       return c.json(
         {
-          message: "This name is already used",
+          message: "This email is already used",
         },
         422
       );
