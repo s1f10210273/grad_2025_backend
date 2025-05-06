@@ -9,12 +9,15 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.14.1",
+    "@hono/zod-openapi": "^0.19.6",
     "@jcs224/hono-sessions": "npm:@jsr/jcs224__hono-sessions@^0.7.2",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.43.1",
+    "drizzle-zod": "^0.7.1",
     "hono": "^4.7.8",
     "mysql2": "^3.14.1",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.50.0",

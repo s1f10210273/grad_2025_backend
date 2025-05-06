@@ -57,24 +57,17 @@ mysql:
 	docker-compose exec db mysql -h db -u my_db_username -pmy_db_password my_dbname
 
 
-# マイグレーションファイルを作成
 .PHONY: makemigration
 makemigration:
-ifndef name
-	$(error Please provide a migration name: make makemigration name=YourMigrationName)
-endif
+	@if [ -z "$(name)" ]; then \
+		echo "❌ Please provide a migration name: make makemigration name=YourMigrationName"; \
+		exit 1; \
+	fi
 	npx drizzle-kit generate --name=$(name)
 
-
-# マイグレーションを実行
 .PHONY: migrate
 migrate:
 	npx drizzle-kit migrate
-
-# データベースマイグレーションを実行
-.PHONY: migrate
-migrate:
-	docker-compose exec app npm run migrate
 
 # Playwrightテストを実行
 .PHONY: test
