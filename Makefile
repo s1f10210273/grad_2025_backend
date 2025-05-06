@@ -79,7 +79,6 @@ test:
 test-ui:
 	docker-compose exec app npx playwright show-report
 
-# 未使用のDockerリソースをクリーンアップ
 .PHONY: clean
 clean:
 	docker volume rm grad_2025_backend_db_data
