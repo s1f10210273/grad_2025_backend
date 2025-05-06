@@ -1,20 +1,4 @@
-# Dockerコマンドを簡略化するMakefile
 
-# デフォルトのターゲット
-.PHONY: help
-help:
-	@echo "使用可能なコマンド:"
-	@echo "  make build      - Dockerイメージをビルドする"
-	@echo "  make up         - コンテナを起動する"
-	@echo "  make down       - コンテナを停止する"
-	@echo "  make restart    - コンテナを再起動する"
-	@echo "  make logs       - コンテナのログを表示する"
-	@echo "  make sh         - アプリケーションコンテナのシェルに接続する"
-	@echo "  make mysql      - MySQLコンテナに接続する"
-	@echo "  make migrate    - データベースマイグレーションを実行する"
-	@echo "  make test       - Playwrightテストを実行する"
-	@echo "  make test-ui    - Playwrightのテストレポートを表示する"
-	@echo "  make clean      - 未使用のDockerリソースをクリーンアップする"
 
 # Dockerイメージをビルド
 .PHONY: build
@@ -82,3 +66,6 @@ test-ui:
 .PHONY: clean
 clean:
 	docker volume rm grad_2025_backend_db_data
+
+.PHONY: init
+init:build up migrate

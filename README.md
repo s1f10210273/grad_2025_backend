@@ -10,17 +10,14 @@
 npm i
 ```
 
-#### 2.Docker をビルド
+#### 2.Docker を立ち上げ
 
 ```sh
-make build
+make init
 ```
 
-#### 3.Docker Up
-
-```sh
-make up
-```
+以下の URL で立ち上がります
+http://localhost:3000/
 
 ### tips
 
@@ -52,11 +49,20 @@ make migrate
 
 DB のデータを削除したいときなどに使えます
 
+docker が落ちているのを確認後に実行
+
 ```sh
+make down
 make clean
 ```
 
+削除した後には、`make init`で Docker を立ち上げてください。
+migration も合わせて実行されます
+
 #### SQL コマンドを直打ちしたい
+
+コンテナ立ち上げ直後ではエラーになる場合があります
+しばらくしてからもう一度実行すれば入れます。
 
 ```sh
 make mysql
