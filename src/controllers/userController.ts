@@ -1,5 +1,5 @@
 import type { Context } from "hono";
-import { Session } from "@jcs224/hono-sessions";
+import type { Session } from "@jcs224/hono-sessions";
 import type { SessionDataTypes } from "../index.js";
 import { userInsertSchema, type UserInsert } from "../db/user.js";
 import { findUserByEmail, registerUser } from "../models/userModel.js";
@@ -96,14 +96,13 @@ export async function userLogin(c: UserContext) {
         },
         200
       );
-    } else {
-      return c.json(
-        {
-          message: "Invalid email or password",
-        },
-        400
-      );
     }
+    return c.json(
+      {
+        message: "Invalid email or password",
+      },
+      400
+    );
   } catch (e) {
     console.error(e);
     return c.json(
