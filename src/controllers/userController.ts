@@ -119,6 +119,7 @@ export async function userLogout(c: UserContext) {
 
 	try {
 		session.deleteSession();
+		console.log("session", session.get("uuid"));
 		return c.json(
 			{
 				message: "Logged out",
