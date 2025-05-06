@@ -24,5 +24,5 @@ storeRouter.openapi(registerRoute, storeRegister);
 storeRouter.openapi(loginRoute, storeLogin);
 
 // /login
-storeRouter.use("/login", storeCheckAuth);
+storeRouter.use("/logout", storeCheckAuth);
 storeRouter.openapi(logoutRoute, storeLogout);

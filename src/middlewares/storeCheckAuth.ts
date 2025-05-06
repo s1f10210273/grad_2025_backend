@@ -17,7 +17,7 @@ export const storeCheckAuth: MiddlewareHandler = async (c, next) => {
 		role !== "store" ||
 		expirationTime < now
 	) {
-		await session.delete();
+		session.deleteSession();
 		return c.json({ message: "Unauthorized" }, 401);
 	}
 

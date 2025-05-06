@@ -117,6 +117,7 @@ export async function storeLogout(c: StoreContext) {
 
 	try {
 		session.deleteSession();
+		console.log("session", session.get("uuid"));
 		return c.json(
 			{
 				message: "Logged out",
