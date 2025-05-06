@@ -15,4 +15,4 @@ export const storeTable = mysqlTable("stores", {
 export const storeSelectSchema = createSelectSchema(storeTable);
 export const storeInsertSchema = createInsertSchema(storeTable);
 
-export type StoreInsert = z.infer<typeof storeSelectSchema>;
+export type StoreInsert = z.infer<typeof storeInsertSchema>;

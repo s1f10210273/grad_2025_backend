@@ -1,10 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import type { Session } from "@jcs224/hono-sessions";
-import {
-  userLogin,
-  userLogout,
-  userRegister,
-} from "../controllers/userController.js";
+import { storeLogin, storeLogout, storeRegister } from "../controllers/storeController.js";
 import type { SessionDataTypes } from "../index.js";
 import { storeCheckAuth } from "../middlewares/storeCheckAuth.js";
 import { validateStoreRegister } from "../middlewares/validateStoreRegister.js";
@@ -22,11 +18,11 @@ export const storeRouter = new OpenAPIHono<{
 
 // /register
 storeRouter.use("/register", validateStoreRegister);
-storeRouter.openapi(registerRoute, userRegister);
+storeRouter.openapi(registerRoute, storeRegister);
 
 // /login
-storeRouter.openapi(loginRoute, userLogin);
+storeRouter.openapi(loginRoute, storeLogin);
 
 // /login
 storeRouter.use("/login", storeCheckAuth);
-storeRouter.openapi(logoutRoute, userLogout);
+storeRouter.openapi(logoutRoute, storeLogout);
