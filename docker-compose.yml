@@ -4,7 +4,8 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      # 環境変数に合わせてポート3001を使用
+      - "3001:3001"
       - "9229:9229"
     volumes:
       - ./src:/usr/src/app/src
@@ -13,6 +14,8 @@ services:
     depends_on:
       - db
     environment:
+      # 環境変数に3001を指定
+      - PORT=3001
       - SESSION_SECRET=secret-key
       - DB_HOST=db
       - MYSQL_DATABASE=my_dbname
