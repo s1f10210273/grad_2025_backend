@@ -11,7 +11,6 @@ import { testRouter } from "./routes/testRouter.js";
 import { userRouter } from "./routes/userRouter.js";
 import type { sessionRole } from "./types/roleTypes.js";
 
-
 export type SessionDataTypes = {
   uuid: string;
   role: sessionRole;

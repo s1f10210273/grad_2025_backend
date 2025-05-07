@@ -15,7 +15,8 @@ COPY . .
 RUN npm run build
 
 # ポートを公開
-EXPOSE 3000
+# 3000を使用したい
+EXPOSE 3001
 
 # 開発用コマンドを実行
 CMD [ "node", "--inspect=0.0.0.0:9229", "./dist/index.js" ]
