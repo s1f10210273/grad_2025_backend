@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { StoreInsert } from "../db/store.js";
 import { sessionExpirationTime } from "../helpers/const.js";
 import type { SessionDataTypes } from "../index.js";
+import { storeCheckAuth } from "../middlewares/storeCheckAuth.js";
 import { findStoreByEmail, registerStore } from "../models/storeModel.js";
 
 type StoreContext = Context<{
@@ -113,6 +114,10 @@ export async function storeLogin(c: StoreContext) {
 }
 
 export async function storeLogout(c: StoreContext) {
+		const authResponse = await storeCheckAuth(c);
+		if (authResponse) {
+			return authResponse;  // 認証に失敗した場合はそのままレスポンスを返す
+		}
 	const session = await c.get("session");
 
 	try {

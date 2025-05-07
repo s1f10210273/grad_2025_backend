@@ -11,6 +11,7 @@ services:
       - ./src:/usr/src/app/src
       - ./package.json:/usr/src/app/package.json
       - ./tsconfig.json:/usr/src/app/tsconfig.json
+      - ./uploads:/usr/src/app/uploads
     depends_on:
       - db
     environment:

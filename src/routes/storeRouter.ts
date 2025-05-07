@@ -2,7 +2,6 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import type { Session } from "@jcs224/hono-sessions";
 import { storeLogin, storeLogout, storeRegister } from "../controllers/storeController.js";
 import type { SessionDataTypes } from "../index.js";
-import { storeCheckAuth } from "../middlewares/storeCheckAuth.js";
 import { validateStoreRegister } from "../middlewares/validateStoreRegister.js";
 import {
   loginRoute,
@@ -24,5 +23,4 @@ storeRouter.openapi(registerRoute, storeRegister);
 storeRouter.openapi(loginRoute, storeLogin);
 
 // /login
-storeRouter.use("/logout", storeCheckAuth);
 storeRouter.openapi(logoutRoute, storeLogout);

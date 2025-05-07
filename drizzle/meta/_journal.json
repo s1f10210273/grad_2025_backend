@@ -15,6 +15,13 @@
       "when": 1746532153283,
       "tag": "0001_create-store",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1746622087236,
+      "tag": "0002_create-item",
+      "breakpoints": true
     }
   ]
 }
