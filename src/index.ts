@@ -5,6 +5,8 @@ import { CookieStore, Session, sessionMiddleware } from "@jcs224/hono-sessions";
 import { sessionExpirationTime } from "./helpers/const.js";
 import { config } from "./helpers/env.js";
 import { cartRouter } from "./routes/cartRouter.js";
+import { openApiCartTag } from "./routes/openapi/cartRoute.js";
+import { openApiItemTag } from "./routes/openapi/itemRoute.js";
 import { openApiStoreTag } from "./routes/openapi/storeRoute.js";
 import { openApiUserTag } from "./routes/openapi/userRoute.js";
 import { storeRouter } from "./routes/storeRouter.js";
@@ -67,7 +69,7 @@ app.doc("/api-docs", {
       description: "開発サーバー",
     },
   ],
-  tags: [openApiUserTag, openApiStoreTag],
+  tags: [openApiUserTag, openApiStoreTag, openApiItemTag, openApiCartTag],
 });
 
 // APIインデックスページ

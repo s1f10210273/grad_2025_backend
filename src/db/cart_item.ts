@@ -1,4 +1,5 @@
 import { bigint, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const cartItemsTable = mysqlTable("cart_items", {
   id: bigint({ mode: "number", unsigned: true }).autoincrement().notNull().primaryKey(),
@@ -12,3 +13,6 @@ export const cartItemsTable = mysqlTable("cart_items", {
   updated_at: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
   deleted_at: timestamp("deleted_at"),
 });
+
+export const cartItemsSelectSchema = createSelectSchema(cartItemsTable);
+export const cartItemsInsertSchema = createInsertSchema(cartItemsTable);

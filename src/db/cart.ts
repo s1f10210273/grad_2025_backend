@@ -1,4 +1,5 @@
 import { bigint, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 // todo:foreignKeyの設定しておいた方がいい
 export const cartsTable = mysqlTable("carts", {
@@ -9,3 +10,6 @@ export const cartsTable = mysqlTable("carts", {
   updated_at: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
   deleted_at: timestamp("deleted_at"),
 });
+
+export const cartsSelectSchema = createSelectSchema(cartsTable);
+export const cartsInsertSchema = createInsertSchema(cartsTable);
