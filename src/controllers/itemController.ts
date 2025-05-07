@@ -4,6 +4,7 @@ import type { Context } from "hono";
 import { extname, join } from "path";
 import { v4 as uuidv4 } from "uuid";
 import type { ItemsInsert } from "../db/item.js";
+import { config } from "../helpers/env.js";
 import type { SessionDataTypes } from "../index.js";
 import { storeCheckAuth } from "../middlewares/storeCheckAuth.js";
 import { addItem, getAllItems } from "../models/itemModel.js";
@@ -56,9 +57,7 @@ export async function storeAddItem(c: ItemContext) {
       price: Number(price),
       store_id: storeId,
       // 画像のパスを生成
-      // 開発環境でポートが変わることが多いため、パスのみ指定
-      // 使用時はconfig.urlを前につける
-      img_url: `/uploads/img/${fileName}`,
+      img_url: `${config.url}/uploads/img/${fileName}`,
     };
 
     await addItem(item);
