@@ -1,9 +1,12 @@
 import { serve } from "@hono/node-server";
+import { serveStatic } from '@hono/node-server/serve-static';
 import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { CookieStore, Session, sessionMiddleware } from "@jcs224/hono-sessions";
 import { sessionExpirationTime } from "./helpers/const.js";
 import { config } from "./helpers/env.js";
+import { itemRouter } from "./routes/itemRouter.js";
+import { openApiItemTag } from "./routes/openapi/itemRoute.js";
 import { openApiStoreTag } from "./routes/openapi/storeRoute.js";
 import { openApiUserTag } from "./routes/openapi/userRoute.js";
 import { storeRouter } from "./routes/storeRouter.js";
@@ -22,6 +25,9 @@ const app = new OpenAPIHono<{
     session: Session<SessionDataTypes>;
   };
 }>();
+
+// 静的ファイルの提供を設定
+app.use('/uploads/*', serveStatic({ root: './' }));
 
 const store = new CookieStore();
 
@@ -49,6 +55,7 @@ app.get("/", (c) => {
 app.route("/test", testRouter);
 app.route("/api/users", userRouter);
 app.route("/api/stores", storeRouter);
+app.route("/api/items", itemRouter);
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));
@@ -65,7 +72,7 @@ app.doc("/api-docs", {
       description: "開発サーバー",
     },
   ],
-  tags: [openApiUserTag, openApiStoreTag],
+  tags: [openApiUserTag, openApiStoreTag, openApiItemTag],
 });
 
 // APIインデックスページ

@@ -6,7 +6,6 @@ import {
 	userRegister,
 } from "../controllers/userController.js";
 import type { SessionDataTypes } from "../index.js";
-import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 import { validateUserRegister } from "../middlewares/validateUserRegister.js";
 import {
 	loginRoute,
@@ -29,6 +28,5 @@ userRouter.openapi(registerUserRoute, userRegister);
 // /login
 userRouter.openapi(loginRoute, userLogin);
 
-// /login
-userRouter.use("/logout", userCheckAuth);
+// /logout
 userRouter.openapi(logoutRoute, userLogout);
