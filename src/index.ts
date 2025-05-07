@@ -5,6 +5,7 @@ import { CookieStore, Session, sessionMiddleware } from "@jcs224/hono-sessions";
 import { sessionExpirationTime } from "./helpers/const.js";
 import { config } from "./helpers/env.js";
 import { cartRouter } from "./routes/cartRouter.js";
+import { itemRouter } from "./routes/itemRouter.js";
 import { openApiCartTag } from "./routes/openapi/cartRoute.js";
 import { openApiItemTag } from "./routes/openapi/itemRoute.js";
 import { openApiStoreTag } from "./routes/openapi/storeRoute.js";
@@ -52,7 +53,9 @@ app.get("/", (c) => {
 app.route("/test", testRouter);
 app.route("/api/users", userRouter);
 app.route("/api/stores", storeRouter);
+app.route("/api/items", itemRouter);
 app.route("/api/carts", cartRouter);
+
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));
