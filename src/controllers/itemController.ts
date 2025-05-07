@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { ItemsInsert } from "../db/item.js";
 import type { SessionDataTypes } from "../index.js";
 import { storeCheckAuth } from "../middlewares/storeCheckAuth.js";
-import { addItem } from "../models/itemModel.js";
+import { addItem, getAllItems } from "../models/itemModel.js";
 
 type ItemContext = Context<{
   Variables: {
@@ -73,5 +73,21 @@ export async function storeAddItem(c: ItemContext) {
       message: "Internal server error",
       error: error instanceof Error ? error.message : "Unknown error",
     }, 500);
+  }
+}
+
+export async function getAllItem(c: Context) {
+  try {
+    const result = await getAllItems();
+    return c.json(result, 200);
+  } catch (error) {
+    console.error("Error in getAllItem:", error);
+    return c.json(
+      {
+        message: "Internal server error",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      500
+    );
   }
 }
