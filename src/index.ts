@@ -4,6 +4,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { CookieStore, Session, sessionMiddleware } from "@jcs224/hono-sessions";
 import { sessionExpirationTime } from "./helpers/const.js";
 import { config } from "./helpers/env.js";
+import { itemRouter } from "./routes/itemRouter.js";
 import { openApiStoreTag } from "./routes/openapi/storeRoute.js";
 import { openApiUserTag } from "./routes/openapi/userRoute.js";
 import { storeRouter } from "./routes/storeRouter.js";
@@ -49,6 +50,7 @@ app.get("/", (c) => {
 app.route("/test", testRouter);
 app.route("/api/users", userRouter);
 app.route("/api/stores", storeRouter);
+app.route("/api/items", itemRouter);
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));
