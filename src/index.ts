@@ -15,6 +15,7 @@ import { testRouter } from "./routes/testRouter.js";
 import { userRouter } from "./routes/userRouter.js";
 import type { sessionRole } from "./types/roleTypes.js";
 import { serveStatic } from "@hono/node-server/serve-static";
+import { orderRouter } from "./routes/orderRoute.js";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -59,6 +60,7 @@ app.route("/api/users", userRouter);
 app.route("/api/stores", storeRouter);
 app.route("/api/items", itemRouter);
 app.route("/api/carts", cartRouter);
+app.route("/api/orders", orderRouter);
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));
