@@ -4,7 +4,7 @@ import type { SessionDataTypes } from "../index.js";
 import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 import { db } from "../db.js";
 import { deleteCartModel, getCurrentCartId } from "../models/cartModel.js";
-import { createOrder } from "../models/orderModel.js";
+import { createOrder, getOrders } from "../models/orderModel.js";
 
 type OrderContext = Context<{
   Variables: {
@@ -46,4 +46,28 @@ export async function orderRegister(c: OrderContext) {
   }
 }
 
-export const getOrderHistory = async (c: OrderContext) => {};
+export const getOrderHistory = async (c: OrderContext) => {
+  try {
+    const authResponse = await userCheckAuth(c);
+    if (authResponse) {
+      return authResponse;
+    }
+
+    const session = c.get("session");
+    const userId = session.get("uuid");
+
+    if (!userId) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
+    // 注文履歴の取得
+    const orderHistory = await getOrders(userId);
+    if (!orderHistory) {
+      return c.json({ message: "No order history found" }, 404);
+    }
+    return c.json(orderHistory, 200);
+  } catch (error) {
+    console.error("Error fetching order history:", error);
+    return c.json({ message: "Internal Server Error" }, 500);
+  }
+};

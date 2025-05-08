@@ -80,6 +80,16 @@ export const getOrderHistoryRoute = createRoute({
       },
       description: "Unauthorized",
     },
+    404: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "No order history found",
+    },
     500: {
       content: {
         "application/json": {
