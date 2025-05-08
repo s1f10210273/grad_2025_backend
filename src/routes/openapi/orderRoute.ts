@@ -55,3 +55,44 @@ export const createOrderRoute = createRoute({
   summary: "注文を作成する",
   description: "注文を作成します",
 });
+
+export const getOrderHistoryRoute = createRoute({
+  method: "get",
+  path: "/",
+  request: {},
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Order history retrieved successfully",
+    },
+    401: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Unauthorized",
+    },
+    500: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Internal server error",
+    },
+  },
+  tags: [openApiOrderTag.name],
+  summary: "注文履歴を表示",
+  description: "注文履歴を表示します",
+});

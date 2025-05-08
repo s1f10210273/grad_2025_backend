@@ -45,3 +45,5 @@ export async function orderRegister(c: OrderContext) {
     return c.json({ message: "Internal Server Error" }, 500);
   }
 }
+
+export const getOrderHistory = async (c: OrderContext) => {};
