@@ -52,11 +52,8 @@ export const getCurrentCart = async (userId: string) => {
   return cart;
 };
 
-export const getCurrentCartId = async (
-  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
-  userId: string
-) => {
-  const [cart] = await tx
+export const getCurrentCartId = async (userId: string) => {
+  const [cart] = await db
     .select({
       cartId: cartsTable.id,
     })

@@ -47,7 +47,6 @@ export const getOrders = async (userId: string) => {
     .leftJoin(crewsTable, eq(ordersTable.crew_id, crewsTable.uuid))
     .where(and(eq(ordersTable.user_id, userId)));
 
-  console.log("orders", orders);
   const orderMap = new Map<number, any>();
 
   for (const row of orders) {

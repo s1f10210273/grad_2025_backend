@@ -5,6 +5,7 @@ import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 import { db } from "../db.js";
 import { deleteCartModel, getCurrentCartId } from "../models/cartModel.js";
 import { createOrder, getOrders } from "../models/orderModel.js";
+import { getCartDetailByUserId } from "../models/cartModel.js";
 
 type OrderContext = Context<{
   Variables: {
@@ -25,20 +26,26 @@ export async function orderRegister(c: OrderContext) {
       return c.json({ message: "Unauthorized" }, 401);
     }
 
+    // 現在のカートIDを取得
+    const currentCartId = await getCurrentCartId(userId);
+    if (!currentCartId) {
+      return c.json({ message: "No cart found for the user" }, 400);
+    }
+
+    // カート内のアイテムを確認
+    const cart = await getCartDetailByUserId(userId);
+    if (!cart || !cart.stores || cart.stores.length === 0) {
+      return c.json({ message: "Cart is empty" }, 400);
+    }
+
     await db.transaction(async (tx) => {
-      const currentCartId = await getCurrentCartId(tx, userId);
-
-      // カートが存在しない場合は404エラーを返す
-      if (!currentCartId) {
-        return c.json({ message: "No cart found for the user" }, 400);
-      }
-
       // orderの作成
       await createOrder(tx, userId, currentCartId);
 
       // カートの削除
       await deleteCartModel(tx, userId);
     });
+
     return c.json({ message: "Order created successfully" }, 201);
   } catch (error) {
     console.error("Error creating order:", error);
