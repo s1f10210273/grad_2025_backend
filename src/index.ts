@@ -18,6 +18,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { orderRouter } from "./routes/orderRoute.js";
 import { openApiOrderTag } from "./routes/openapi/orderRoute.js";
 import { crewRouter } from "./routes/crewRouter.js";
+import { openApiCrewTag } from "./routes/openapi/crewRoute.js";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -86,6 +87,7 @@ app.doc("/api-docs", {
     openApiItemTag,
     openApiCartTag,
     openApiOrderTag,
+    openApiCrewTag,
   ],
 });
 
