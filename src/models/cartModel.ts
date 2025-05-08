@@ -90,6 +90,7 @@ export const getCartDetailByUserId = async (
     .where(
       and(
         eq(cartsTable.user_id, userId),
+        isNull(cartItemsTable.deleted_at),
         isNull(cartsTable.ordered_at),
         isNull(cartsTable.deleted_at)
       )

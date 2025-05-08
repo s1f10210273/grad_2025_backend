@@ -19,6 +19,8 @@ import {
 } from "../models/cartModel.js";
 import { getItemDetailsByIds } from "../models/itemModel.js";
 import type { CartRegisterApi } from "../schemas/cartItem.js";
+import { cartItemsTable } from "../db/cart_item.js";
+import { and, eq, isNull } from "drizzle-orm";
 
 type CartContext = Context<{
   Variables: {
@@ -129,17 +131,13 @@ export async function updateCarts(c: CartContext) {
     }
 
     await db.transaction(async (tx) => {
-      await updateCartItems(tx, c, cart.id, validatedItems.items);
-
-      const deleteItems = validatedItems.items.map(({ itemId, quantity }) => ({
-        itemId,
-        quantity,
-      }));
-      // カートアイテムの削除処理を追加
-      await deleteMissingCartItems(tx, cart.id, deleteItems);
+      await updateCartItems(tx, cart.id, validatedItems.items);
 
       // 新しいアイテムの追加処理を追加
       await addNewCartItems(tx, cart.id, validatedItems.items);
+
+      // 0のカートアイテムの削除処理を追加
+      await deleteMissingCartItems(tx, cart.id);
     });
     return c.json({ message: "Cart updated successfully" }, 200);
   } catch (error) {
@@ -226,37 +224,40 @@ export const validateItems = async (c: CartContext) => {
 
 export const updateCartItems = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
-  c: CartContext,
   cartId: number,
   items: CartRegisterApi[]
 ) => {
-  const itemIds = items.map((item) => Number(item.itemId));
-  const itemDetails = await getItemDetailsByIds(itemIds);
-  if (itemDetails.length !== itemIds.length) {
-    return c.json({ message: "Some item IDs are invalid" }, 400);
-  }
-  const itemDetailsMap = new Map(
-    itemDetails.map((item) => [
-      item.itemId,
-      { name: item.itemName, price: item.itemPrice, storeId: item.storeId },
-    ])
-  );
-  const enrichedItems = items.map((item) => {
-    const details = itemDetailsMap.get(Number(item.itemId));
-    if (!details) {
-      throw new Error(`Item with ID ${item.itemId} not found`);
-    }
-    return {
-      itemId: Number(item.itemId),
-      itemName: details.name,
-      itemPrice: details.price,
-      quantity: item.quantity,
-      storeId: details.storeId,
-    };
-  });
-  await createcartItems(tx, cartId, enrichedItems);
+  try {
+    const existingItemIds = new Set(
+      await fetchExistingCartItemIds(
+        tx,
+        cartId,
+        items.map((i) => i.itemId)
+      )
+    );
 
-  return c.json({ message: "Cart updated successfully" }, 200);
+    const currentItems = items.filter((item) =>
+      existingItemIds.has(item.itemId)
+    );
+
+    await Promise.all(
+      currentItems.map((item) =>
+        tx
+          .update(cartItemsTable)
+          .set({ quantity: item.quantity })
+          .where(
+            and(
+              eq(cartItemsTable.cart_id, cartId),
+              eq(cartItemsTable.item_id, item.itemId),
+              isNull(cartItemsTable.deleted_at)
+            )
+          )
+      )
+    );
+  } catch (error) {
+    console.error("Error updating cart items:", error);
+    throw new Error("Failed to update cart items");
+  }
 };
 
 export const addNewCartItems = async (
