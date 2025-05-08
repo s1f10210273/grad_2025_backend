@@ -128,6 +128,16 @@ export const cartPutRoute = createRoute({
       },
       description: "Cart updated successfully",
     },
+    400: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "invalid request",
+    },
     401: {
       content: {
         "application/json": {
