@@ -1,4 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
+import { getOrderHistoryApiSchema } from "../../schemas/order.js";
 
 export const openApiOrderTag = {
   name: "orders",
@@ -64,9 +65,7 @@ export const getOrderHistoryRoute = createRoute({
     200: {
       content: {
         "application/json": {
-          schema: z.object({
-            message: z.string(),
-          }),
+          schema: getOrderHistoryApiSchema,
         },
       },
       description: "Order history retrieved successfully",
