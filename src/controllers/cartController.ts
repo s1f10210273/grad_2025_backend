@@ -7,6 +7,7 @@ import { createcartItems } from "../models/cartItemModel.js";
 import {
   createCart,
   getCartDetailByUserId,
+  getCurrentCart,
   hasValidCart,
 } from "../models/cartModel.js";
 import { getItemDetailsByIds } from "../models/itemModel.js";
@@ -89,6 +90,35 @@ export async function getCarts(c: CartContext) {
     return c.json(cart, 200);
   } catch (error) {
     console.error("Error in cartGet:", error);
+    return c.json({ message: "Internal Server Error" }, 500);
+  }
+}
+
+export async function updateCarts(c: CartContext) {
+  try {
+    const authResponse = await userCheckAuth(c);
+    if (authResponse) {
+      return authResponse;
+    }
+
+    const session = c.get("session");
+    const userId = session.get("uuid");
+
+    // ユーザーIDが取得できない場合は401エラーを返す
+    if (!userId) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
+    // カートが存在するか確認
+    const cartId = await getCurrentCart(userId);
+    if (!cartId) {
+      return c.json({ message: "Cart not found for the user" }, 404);
+    }
+
+    //todo: putの処理を追加
+    return c.json({ message: "Cart updated successfully" }, 200);
+  } catch (error) {
+    console.error("Error in putCarts:", error);
     return c.json({ message: "Internal Server Error" }, 500);
   }
 }
