@@ -17,6 +17,8 @@ import type { sessionRole } from "./types/roleTypes.js";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { orderRouter } from "./routes/orderRoute.js";
 import { openApiOrderTag } from "./routes/openapi/orderRoute.js";
+import { crewRouter } from "./routes/crewRouter.js";
+import { openApiCrewTag } from "./routes/openapi/crewRoute.js";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -62,6 +64,7 @@ app.route("/api/stores", storeRouter);
 app.route("/api/items", itemRouter);
 app.route("/api/carts", cartRouter);
 app.route("/api/orders", orderRouter);
+app.route("/api/crews", crewRouter);
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));
@@ -84,6 +87,7 @@ app.doc("/api-docs", {
     openApiItemTag,
     openApiCartTag,
     openApiOrderTag,
+    openApiCrewTag,
   ],
 });
 
