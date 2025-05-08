@@ -1,7 +1,6 @@
 import { db } from "../db.js";
 import { cartItemsTable } from "../db/cart_item.js";
 import type { CartRegisterApi } from "../schemas/cartItem.js";
-import type { CartRegisterApi as ca } from "../schemas/cart.js";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 
 export const createcartItems = async (
@@ -24,11 +23,9 @@ export const createcartItems = async (
 
 export const deleteMissingCartItems = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
-  cartId: number,
-  items: { itemId: number; quantity: number }[]
+  cartId: number
 ) => {
-  const itemIds = items.map((item) => item.itemId);
-  const result = await tx
+  await tx
     .update(cartItemsTable)
     .set({
       deleted_at: new Date(),
@@ -36,8 +33,8 @@ export const deleteMissingCartItems = async (
     .where(
       and(
         eq(cartItemsTable.cart_id, cartId),
-        isNull(cartItemsTable.deleted_at),
-        inArray(cartItemsTable.item_id, itemIds)
+        eq(cartItemsTable.quantity, 0),
+        isNull(cartItemsTable.deleted_at)
       )
     );
 };
@@ -92,4 +89,27 @@ export const deleteCartItemModel = async (
     .where(
       and(eq(cartItemsTable.cart_id, cartId), isNull(cartItemsTable.deleted_at))
     );
+};
+
+export const updateCartItems = async (
+  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
+  cartId: number,
+  items: CartRegisterApi[]
+) => {
+  await Promise.all(
+    items.map((item) =>
+      tx
+        .update(cartItemsTable)
+        .set({
+          quantity: item.quantity,
+        })
+        .where(
+          and(
+            eq(cartItemsTable.cart_id, cartId),
+            eq(cartItemsTable.item_id, item.itemId),
+            isNull(cartItemsTable.deleted_at)
+          )
+        )
+    )
+  );
 };

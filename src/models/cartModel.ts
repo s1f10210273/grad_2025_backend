@@ -52,6 +52,23 @@ export const getCurrentCart = async (userId: string) => {
   return cart;
 };
 
+export const getCurrentCartId = async (userId: string) => {
+  const [cart] = await db
+    .select({
+      cartId: cartsTable.id,
+    })
+    .from(cartsTable)
+    .where(
+      and(
+        eq(cartsTable.user_id, userId),
+        isNull(cartsTable.ordered_at),
+        isNull(cartsTable.deleted_at)
+      )
+    )
+    .limit(1);
+  return cart?.cartId;
+};
+
 // カートの取得
 export const getCartDetailByUserId = async (
   userId: string
@@ -73,6 +90,7 @@ export const getCartDetailByUserId = async (
     .where(
       and(
         eq(cartsTable.user_id, userId),
+        isNull(cartItemsTable.deleted_at),
         isNull(cartsTable.ordered_at),
         isNull(cartsTable.deleted_at)
       )
@@ -105,7 +123,7 @@ export const getCartDetailByUserId = async (
 
 export const deleteCartModel = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
-  cartId: number
+  user_id: string
 ) => {
   await tx
     .update(cartsTable)
@@ -114,7 +132,7 @@ export const deleteCartModel = async (
     })
     .where(
       and(
-        eq(cartsTable.id, cartId),
+        eq(cartsTable.user_id, user_id),
         isNull(cartsTable.ordered_at),
         isNull(cartsTable.deleted_at)
       )

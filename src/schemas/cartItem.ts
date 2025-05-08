@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
 import { cartItemsInsertSchema } from "../db/cart_item.js";
 
-const baseSchema = cartItemsInsertSchema.pick({
+export const baseSchema = cartItemsInsertSchema.pick({
   item_id: true,
   item_name: true,
   item_price: true,
