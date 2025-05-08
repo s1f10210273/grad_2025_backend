@@ -16,6 +16,7 @@ import { userRouter } from "./routes/userRouter.js";
 import type { sessionRole } from "./types/roleTypes.js";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { orderRouter } from "./routes/orderRoute.js";
+import { openApiOrderTag } from "./routes/openapi/orderRoute.js";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -77,7 +78,13 @@ app.doc("/api-docs", {
       description: "開発サーバー",
     },
   ],
-  tags: [openApiUserTag, openApiStoreTag, openApiItemTag, openApiCartTag],
+  tags: [
+    openApiUserTag,
+    openApiStoreTag,
+    openApiItemTag,
+    openApiCartTag,
+    openApiOrderTag,
+  ],
 });
 
 // APIインデックスページ
