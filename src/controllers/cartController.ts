@@ -5,12 +5,14 @@ import type { SessionDataTypes } from "../index.js";
 import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 import {
   createcartItems,
+  deleteCartItemModel,
   deleteMissingCartItems,
   fetchExistingCartItemIds,
   insertNewCartItems,
 } from "../models/cartItemModel.js";
 import {
   createCart,
+  deleteCartModel,
   getCartDetailByUserId,
   getCurrentCart,
   hasValidCart,
@@ -142,6 +144,41 @@ export async function updateCarts(c: CartContext) {
     return c.json({ message: "Cart updated successfully" }, 200);
   } catch (error) {
     console.error("Error in putCarts:", error);
+    return c.json({ message: "Internal Server Error" }, 500);
+  }
+}
+
+export async function deleteCarts(c: CartContext) {
+  try {
+    const authResponse = await userCheckAuth(c);
+    if (authResponse) {
+      return authResponse;
+    }
+
+    const session = c.get("session");
+    const userId = session.get("uuid");
+
+    // ユーザーIDが取得できない場合は401エラーを返す
+    if (!userId) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
+    // カートの取得
+    const cart = await getCurrentCart(userId);
+    if (!cart) {
+      return c.json({ message: "Cart not found for the user" }, 404);
+    }
+
+    await db.transaction(async (tx) => {
+      // カートの削除
+      await deleteCartModel(tx, cart.id);
+
+      // カートアイテムの削除処理を追加
+      await deleteCartItemModel(tx, cart.id);
+    });
+    return c.json({ message: "Cart deleted successfully" }, 200);
+  } catch (error) {
+    console.error("Error in deleteCarts:", error);
     return c.json({ message: "Internal Server Error" }, 500);
   }
 }

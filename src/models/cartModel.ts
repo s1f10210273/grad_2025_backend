@@ -102,3 +102,21 @@ export const getCartDetailByUserId = async (
 
   return { stores };
 };
+
+export const deleteCartModel = async (
+  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
+  cartId: number
+) => {
+  await tx
+    .update(cartsTable)
+    .set({
+      deleted_at: new Date(),
+    })
+    .where(
+      and(
+        eq(cartsTable.id, cartId),
+        isNull(cartsTable.ordered_at),
+        isNull(cartsTable.deleted_at)
+      )
+    );
+};

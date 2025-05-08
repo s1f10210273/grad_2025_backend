@@ -173,3 +173,54 @@ export const cartPutRoute = createRoute({
   summary: "カートの新規登録",
   description: "カートの新規登録を行います",
 });
+
+export const cartDeleteRoute = createRoute({
+  method: "delete",
+  path: "/",
+  request: {},
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Cart deleted successfully",
+    },
+    401: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Unauthorized",
+    },
+    404: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Cart not found for the user",
+    },
+    500: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Internal server error",
+    },
+  },
+  tags: [openApiCartTag.name],
+  summary: "カートの削除",
+  description: "カートの削除を行います",
+});

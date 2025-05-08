@@ -79,3 +79,17 @@ export const insertNewCartItems = async (
 
   await tx.insert(cartItemsTable).values(cartItemsData);
 };
+
+export const deleteCartItemModel = async (
+  tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
+  cartId: number
+) => {
+  await tx
+    .update(cartItemsTable)
+    .set({
+      deleted_at: new Date(),
+    })
+    .where(
+      and(eq(cartItemsTable.cart_id, cartId), isNull(cartItemsTable.deleted_at))
+    );
+};
