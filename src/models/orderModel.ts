@@ -41,9 +41,9 @@ export const getOrders = async (userId: string) => {
       quantity: cartItemsTable.quantity,
     })
     .from(ordersTable)
-    .innerJoin(itemsTable, eq(ordersTable.cart_id, itemsTable.id))
-    .innerJoin(storeTable, eq(itemsTable.store_id, storeTable.uuid))
     .innerJoin(cartItemsTable, eq(ordersTable.cart_id, cartItemsTable.cart_id))
+    .innerJoin(itemsTable, eq(cartItemsTable.item_id, itemsTable.id))
+    .innerJoin(storeTable, eq(itemsTable.store_id, storeTable.uuid))
     .leftJoin(crewsTable, eq(ordersTable.crew_id, crewsTable.uuid))
     .where(and(eq(ordersTable.user_id, userId)));
 
