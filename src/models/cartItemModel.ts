@@ -35,6 +35,7 @@ export const deleteMissingCartItems = async (
     .where(
       and(
         eq(cartItemsTable.cart_id, cartId),
+        eq(cartItemsTable.quantity, 0),
         isNull(cartItemsTable.deleted_at),
         inArray(cartItemsTable.item_id, itemIds)
       )
