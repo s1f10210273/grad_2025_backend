@@ -1,4 +1,4 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { db } from "../db.js";
 import { type ItemsInsert, itemsTable } from "../db/item.js";
 import { storeTable } from "../db/store.js";
@@ -57,4 +57,21 @@ export const getAllItems = async () => {
     const stores = Object.values(storesMap);
 
     return { stores };
+}
+
+export async function getItemDetailsByIds(
+  itemIds: number[]
+){
+  if (itemIds.length === 0) return [];
+  const items = await db
+    .select({
+      itemId: itemsTable.id,
+      itemName: itemsTable.name,
+      itemPrice: itemsTable.price,
+      storeId: itemsTable.store_id,
+    })
+    .from(itemsTable)
+    .where(inArray(itemsTable.id, itemIds));
+
+  return items;
 }
