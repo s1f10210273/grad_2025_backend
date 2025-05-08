@@ -1,7 +1,6 @@
 import { db } from "../db.js";
 import { cartItemsTable } from "../db/cart_item.js";
 import type { CartRegisterApi } from "../schemas/cartItem.js";
-import type { CartRegisterApi as ca } from "../schemas/cart.js";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 
 export const createcartItems = async (

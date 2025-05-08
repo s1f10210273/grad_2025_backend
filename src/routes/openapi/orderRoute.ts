@@ -20,6 +20,16 @@ export const createOrderRoute = createRoute({
       },
       description: "Order created successfully",
     },
+    400: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "No cart found for the user",
+    },
     401: {
       content: {
         "application/json": {

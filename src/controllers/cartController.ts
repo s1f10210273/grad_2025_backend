@@ -171,7 +171,7 @@ export async function deleteCarts(c: CartContext) {
 
     await db.transaction(async (tx) => {
       // カートの削除
-      await deleteCartModel(tx, cart.id);
+      await deleteCartModel(tx, cart.user_id);
 
       // カートアイテムの削除処理を追加
       await deleteCartItemModel(tx, cart.id);
