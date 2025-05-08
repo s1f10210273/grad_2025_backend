@@ -14,6 +14,7 @@ import { storeRouter } from "./routes/storeRouter.js";
 import { testRouter } from "./routes/testRouter.js";
 import { userRouter } from "./routes/userRouter.js";
 import type { sessionRole } from "./types/roleTypes.js";
+import { serveStatic } from "@hono/node-server/serve-static";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -28,6 +29,9 @@ const app = new OpenAPIHono<{
 }>();
 
 const store = new CookieStore();
+
+// 静的ファイルの提供を設定
+app.use("/uploads/*", serveStatic({ root: "./" }));
 
 app.use(
   "*",
@@ -55,7 +59,6 @@ app.route("/api/users", userRouter);
 app.route("/api/stores", storeRouter);
 app.route("/api/items", itemRouter);
 app.route("/api/carts", cartRouter);
-
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));

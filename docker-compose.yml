@@ -6,7 +6,8 @@ services:
     ports:
       # 環境変数に合わせてポート3001を使用
       - "3001:3001"
-      - "9229:9229"
+      # 研修と衝突するため、9229は使用しない
+      - "9230:9230"
     volumes:
       - ./src:/usr/src/app/src
       - ./package.json:/usr/src/app/package.json
