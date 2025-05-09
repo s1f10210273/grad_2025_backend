@@ -1,12 +1,12 @@
 import { db } from "../db.js";
 import { cartItemsTable } from "../db/cart_item.js";
-import type { CartRegisterApi } from "../schemas/cartItem.js";
+import type { CartRegister } from "../schemas/cartItem.js";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 
 export const createcartItems = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   cartId: number,
-  items: CartRegisterApi[]
+  items: CartRegister[]
 ) => {
   const cartItemsData = items.map((item) => ({
     cart_id: cartId,
@@ -63,7 +63,7 @@ export const fetchExistingCartItemIds = async (
 export const insertNewCartItems = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   cartId: number,
-  items: CartRegisterApi[]
+  items: CartRegister[]
 ) => {
   const cartItemsData = items.map((item) => ({
     cart_id: cartId,
@@ -94,7 +94,7 @@ export const deleteCartItemModel = async (
 export const updateCartItems = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   cartId: number,
-  items: CartRegisterApi[]
+  items: CartRegister[]
 ) => {
   await Promise.all(
     items.map((item) =>

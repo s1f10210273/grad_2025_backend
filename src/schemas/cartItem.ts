@@ -2,7 +2,7 @@ import { z } from "@hono/zod-openapi";
 import { cartItemsInsertSchema } from "../db/cart_item.js";
 import { storeInsertSchema } from "../db/store.js";
 
-export const cartRegisterApiSchema = z
+export const cartRegisterSchema = z
   .object({
     itemId: cartItemsInsertSchema.shape.item_id.openapi({ example: 1 }),
     itemName: cartItemsInsertSchema.shape.item_name.openapi({
@@ -16,7 +16,7 @@ export const cartRegisterApiSchema = z
   })
   .openapi("add_user_cart");
 
-export type CartRegisterApi = z.infer<typeof cartRegisterApiSchema>;
+export type CartRegister = z.infer<typeof cartRegisterSchema>;
 
 export const cartGetApiSchema = z
   .object({
@@ -32,7 +32,7 @@ export const cartGetApiSchema = z
             itemName: cartItemsInsertSchema.shape.item_name.openapi({
               example: "item name",
             }),
-            itemPrice: cartItemsInsertSchema.shape.item_price.openapi({
+            price: cartItemsInsertSchema.shape.item_price.openapi({
               example: 100,
             }),
             storeId: cartItemsInsertSchema.shape.store_id.openapi({

@@ -15,7 +15,7 @@ import {
   hasValidCart,
 } from "../models/cartModel.js";
 import { getItemDetailsByIds } from "../models/itemModel.js";
-import type { CartRegisterApi } from "../schemas/cartItem.js";
+import type { CartRegister } from "../schemas/cartItem.js";
 import { cartItemsTable } from "../db/cart_item.js";
 import { and, eq, isNull } from "drizzle-orm";
 import type { AuthContext } from "../types/context.js";
@@ -217,7 +217,7 @@ export const validateItems = async (c: AuthContext) => {
 export const updateCartItems = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   cartId: number,
-  items: CartRegisterApi[]
+  items: CartRegister[]
 ) => {
   try {
     const existingItemIds = new Set(
@@ -255,7 +255,7 @@ export const updateCartItems = async (
 export const addNewCartItems = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   cartId: number,
-  items: CartRegisterApi[]
+  items: CartRegister[]
 ) => {
   try {
     // Set を使って存在するアイテムのIDを取得

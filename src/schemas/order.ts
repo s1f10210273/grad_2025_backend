@@ -37,7 +37,7 @@ export const getOrderHistorySchema = z
             itemName: cartItemsInsertSchema.shape.item_name.openapi({
               example: "item name",
             }),
-            itemPrice: cartItemsInsertSchema.shape.item_price.openapi({
+            price: cartItemsInsertSchema.shape.item_price.openapi({
               example: 100,
             }),
             storeId: cartItemsInsertSchema.shape.store_id.openapi({
