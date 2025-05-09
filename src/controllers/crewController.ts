@@ -1,20 +1,12 @@
-import type { Session } from "@jcs224/hono-sessions";
 import bcrypt from "bcryptjs";
-import type { Context } from "hono";
 import { v4 as uuidv4 } from "uuid";
 import { sessionExpirationTime } from "../helpers/const.js";
-import type { SessionDataTypes } from "../index.js";
 import { crewCheckAuth } from "../middlewares/crewCheckAuth.js";
 import { findCrewByEmail, registerCrew } from "../models/crewModel.js";
 import type { CrewsInsert } from "../db/crew.js";
+import type { AuthContext } from "../types/context.js";
 
-type CrewContext = Context<{
-  Variables: {
-    session: Session<SessionDataTypes>;
-  };
-}>;
-
-export async function crewRegister(c: CrewContext) {
+export async function crewRegister(c: AuthContext) {
   const body = await c.req.json();
   const name: string = body.name;
   const email: string = body.email;
@@ -56,7 +48,7 @@ export async function crewRegister(c: CrewContext) {
   }
 }
 
-export async function crewLogin(c: CrewContext) {
+export async function crewLogin(c: AuthContext) {
   const session = await c.get("session");
   if (session.get("uuid")) {
     console.log("session", session.get("uuid"));
@@ -114,7 +106,7 @@ export async function crewLogin(c: CrewContext) {
   }
 }
 
-export async function crewLogout(c: CrewContext) {
+export async function crewLogout(c: AuthContext) {
   const authResponse = await crewCheckAuth(c);
   if (authResponse) {
     return authResponse; // 認証に失敗した場合はそのままレスポンスを返す

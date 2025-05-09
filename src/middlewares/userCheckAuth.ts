@@ -1,15 +1,7 @@
-import type { Session } from "@jcs224/hono-sessions";
-import type { Context } from "hono";
 import { sessionExpirationTime } from "../helpers/const.js";
-import type { SessionDataTypes } from "../index.js";
+import type { AuthContext } from "../types/context.js";
 
-type UserContext = Context<{
-	Variables: {
-		session: Session<SessionDataTypes>;
-	};
-}>;
-
-export const userCheckAuth = async (c:UserContext) => {
+export const userCheckAuth = async (c: AuthContext) => {
   const session = await c.get("session");
 
   if (!session) {
@@ -29,16 +21,15 @@ export const userCheckAuth = async (c:UserContext) => {
     role !== "user" ||
     expirationTime < now
   ) {
-		try {
-    session.deleteSession();
-    return c.json({ message: "Unauthorized" }, 401);
-		} catch (e) {
-			console.error(e);
-			return c.json({ message: "Internal server error" }, 500);
-		}
+    try {
+      session.deleteSession();
+      return c.json({ message: "Unauthorized" }, 401);
+    } catch (e) {
+      console.error(e);
+      return c.json({ message: "Internal server error" }, 500);
+    }
   }
 
   session.set("expirationTime", now + sessionExpirationTime);
-	return null;
-
+  return null;
 };

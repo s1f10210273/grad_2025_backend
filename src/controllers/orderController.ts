@@ -1,6 +1,3 @@
-import type { Session } from "@jcs224/hono-sessions";
-import type { Context } from "hono";
-import type { SessionDataTypes } from "../index.js";
 import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 import { db } from "../db.js";
 import { deleteCartModel, getCurrentCartId } from "../models/cartModel.js";
@@ -12,14 +9,9 @@ import {
 } from "../models/orderModel.js";
 import { getCartDetailByUserId } from "../models/cartModel.js";
 import { crewCheckAuth } from "../middlewares/crewCheckAuth.js";
+import type { AuthContext } from "../types/context.js";
 
-export type OrderContext = Context<{
-  Variables: {
-    session: Session<SessionDataTypes>;
-  };
-}>;
-
-export async function orderRegister(c: OrderContext) {
+export async function orderRegister(c: AuthContext) {
   try {
     const authResponse = await userCheckAuth(c);
     if (authResponse) {
@@ -59,7 +51,7 @@ export async function orderRegister(c: OrderContext) {
   }
 }
 
-export const getOrderHistory = async (c: OrderContext) => {
+export const getOrderHistory = async (c: AuthContext) => {
   try {
     const authResponse = await userCheckAuth(c);
     if (authResponse) {
@@ -85,7 +77,7 @@ export const getOrderHistory = async (c: OrderContext) => {
   }
 };
 
-export const orderComplete = async (c: OrderContext) => {
+export const orderComplete = async (c: AuthContext) => {
   try {
     const authResponse = await crewCheckAuth(c);
     if (authResponse) {
@@ -113,7 +105,7 @@ export const orderComplete = async (c: OrderContext) => {
   }
 };
 
-export const orderAvailable = async (c: OrderContext) => {
+export const orderAvailable = async (c: AuthContext) => {
   try {
     const authResponse = await crewCheckAuth(c);
     if (authResponse) {

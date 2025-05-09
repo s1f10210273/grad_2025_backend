@@ -1,26 +1,18 @@
-import type { Session } from "@jcs224/hono-sessions";
 import { writeFile } from "fs/promises";
-import type { Context } from "hono";
 import { extname, join } from "path";
 import { v4 as uuidv4 } from "uuid";
 import type { ItemsInsert } from "../db/item.js";
 import { config } from "../helpers/env.js";
-import type { SessionDataTypes } from "../index.js";
 import { storeCheckAuth } from "../middlewares/storeCheckAuth.js";
 import { addItem, getAllItems } from "../models/itemModel.js";
+import type { AuthContext } from "../types/context.js";
 
-type ItemContext = Context<{
-  Variables: {
-    session: Session<SessionDataTypes>;
-  };
-}>;
-
-export async function storeAddItem(c: ItemContext) {
+export async function storeAddItem(c: AuthContext) {
   const authResponse = await storeCheckAuth(c);
   if (authResponse) {
     return authResponse;
   }
-  
+
   try {
     const session = await c.get("session");
     const storeId = session.get("uuid");
@@ -62,20 +54,25 @@ export async function storeAddItem(c: ItemContext) {
 
     await addItem(item);
 
-    return c.json({
-      message: "Item added successfully",
-    }, 201);
-
+    return c.json(
+      {
+        message: "Item added successfully",
+      },
+      201
+    );
   } catch (error) {
     console.error("Error in storeAddItem:", error);
-    return c.json({
-      message: "Internal server error",
-      error: error instanceof Error ? error.message : "Unknown error",
-    }, 500);
+    return c.json(
+      {
+        message: "Internal server error",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      500
+    );
   }
 }
 
-export async function getAllItem(c: Context) {
+export async function getAllItem(c: AuthContext) {
   try {
     const result = await getAllItems();
     return c.json(result, 200);
