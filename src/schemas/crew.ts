@@ -1,17 +1,13 @@
 import { z } from "@hono/zod-openapi";
 import { crewsInsertSchema } from "../db/crew.js";
 
-const baseApiSchema = crewsInsertSchema.pick({
-  name: true,
-  email: true,
-  password: true,
-});
-
 export const crewRegisterApiSchema = z
   .object({
-    name: baseApiSchema.shape.name.openapi({ example: "John Doe" }),
-    email: baseApiSchema.shape.email.openapi({ example: "john@example.com" }),
-    password: baseApiSchema.shape.password.openapi({
+    name: crewsInsertSchema.shape.name.openapi({ example: "John Doe" }),
+    email: crewsInsertSchema.shape.email.openapi({
+      example: "john@example.com",
+    }),
+    password: crewsInsertSchema.shape.password.openapi({
       example: "securePassword123",
     }),
   })
@@ -20,8 +16,10 @@ export const crewRegisterApiSchema = z
 
 export const crewLoginApiSchema = z
   .object({
-    email: baseApiSchema.shape.email.openapi({ example: "john@example.com" }),
-    password: baseApiSchema.shape.password.openapi({
+    email: crewsInsertSchema.shape.email.openapi({
+      example: "john@example.com",
+    }),
+    password: crewsInsertSchema.shape.password.openapi({
       example: "securePassword123",
     }),
   })

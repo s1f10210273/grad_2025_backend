@@ -1,27 +1,17 @@
 import { z } from "@hono/zod-openapi";
 import { ordersInsertSchema } from "../db/order.js";
-import { baseSchema as cartSchema } from "./cartItem.js";
-
-const baseApiSchema = ordersInsertSchema.pick({
-  id: true,
-  crew_id: true,
-  user_id: true,
-  status_code: true,
-  cart_id: true,
-  delivered_at: true,
-  created_at: true,
-});
+import { cartItemsInsertSchema } from "../db/cart_item.js";
 
 export const getOrderHistorySchema = z
   .object({
-    orderId: baseApiSchema.shape.id.openapi({ example: 1 }),
-    orderedAt: baseApiSchema.shape.created_at.openapi({
+    orderId: ordersInsertSchema.shape.id.openapi({ example: 1 }),
+    orderedAt: ordersInsertSchema.shape.created_at.openapi({
       example: "2023-10-01T00:00:00Z",
     }),
-    deliveredAt: baseApiSchema.shape.delivered_at.openapi({
+    deliveredAt: ordersInsertSchema.shape.delivered_at.openapi({
       example: "2023-10-01T00:00:00Z",
     }),
-    crewId: baseApiSchema.shape.crew_id.openapi({
+    crewId: ordersInsertSchema.shape.crew_id.openapi({
       example: "crew id",
     }),
     crewName: z
@@ -30,7 +20,7 @@ export const getOrderHistorySchema = z
         example: "crew name",
       })
       .optional(),
-    status: baseApiSchema.shape.status_code.openapi({
+    status: ordersInsertSchema.shape.status_code.openapi({
       example: 1,
     }),
     stores: z.array(
@@ -40,15 +30,19 @@ export const getOrderHistorySchema = z
         storeName: z.string().max(64).openapi({ example: "store name" }),
         items: z.array(
           z.object({
-            itemId: cartSchema.shape.item_id.openapi({ example: 1 }),
-            itemName: cartSchema.shape.item_name.openapi({
+            itemId: cartItemsInsertSchema.shape.item_id.openapi({ example: 1 }),
+            itemName: cartItemsInsertSchema.shape.item_name.openapi({
               example: "item name",
             }),
-            itemPrice: cartSchema.shape.item_price.openapi({ example: 100 }),
-            storeId: cartSchema.shape.store_id.openapi({
+            itemPrice: cartItemsInsertSchema.shape.item_price.openapi({
+              example: 100,
+            }),
+            storeId: cartItemsInsertSchema.shape.store_id.openapi({
               example: "store id",
             }),
-            quantity: cartSchema.shape.quantity.openapi({ example: 1 }),
+            quantity: cartItemsInsertSchema.shape.quantity.openapi({
+              example: 1,
+            }),
           })
         ),
       })
@@ -64,21 +58,21 @@ export const getOrderHistoryApiSchema = z
 
 export const getOrderAvailableSchema = z
   .object({
-    orderId: baseApiSchema.shape.id.openapi({ example: 1 }),
-    orderedAt: baseApiSchema.shape.created_at.openapi({
+    orderId: ordersInsertSchema.shape.id.openapi({ example: 1 }),
+    orderedAt: ordersInsertSchema.shape.created_at.openapi({
       example: "2023-10-01T00:00:00Z",
     }),
-    status: baseApiSchema.shape.status_code.openapi({
+    status: ordersInsertSchema.shape.status_code.openapi({
       example: 1,
     }),
-    userId: baseApiSchema.shape.user_id.openapi({
+    userId: ordersInsertSchema.shape.user_id.openapi({
       example: "user id",
     }),
     // rodo: dbの型を使いたい
     userAddress: z.string().openapi({
       example: "user address",
     }),
-    storeId: cartSchema.shape.store_id.openapi({
+    storeId: cartItemsInsertSchema.shape.store_id.openapi({
       example: "store id",
     }),
     storeName: z.string().openapi({
@@ -86,12 +80,12 @@ export const getOrderAvailableSchema = z
     }),
     items: z.array(
       z.object({
-        itemId: cartSchema.shape.item_id.openapi({ example: 1 }),
-        itemName: cartSchema.shape.item_name.openapi({
+        itemId: cartItemsInsertSchema.shape.item_id.openapi({ example: 1 }),
+        itemName: cartItemsInsertSchema.shape.item_name.openapi({
           example: "item name",
         }),
-        price: cartSchema.shape.item_price.openapi({ example: 100 }),
-        quantity: cartSchema.shape.quantity.openapi({ example: 1 }),
+        price: cartItemsInsertSchema.shape.item_price.openapi({ example: 100 }),
+        quantity: cartItemsInsertSchema.shape.quantity.openapi({ example: 1 }),
       })
     ),
   })

@@ -1,21 +1,17 @@
 import { z } from "@hono/zod-openapi";
 import { cartItemsInsertSchema } from "../db/cart_item.js";
 
-export const baseSchema = cartItemsInsertSchema.pick({
-  item_id: true,
-  item_name: true,
-  item_price: true,
-  store_id: true,
-  quantity: true,
-});
-
 export const cartRegisterApiSchema = z
   .object({
-    itemId: baseSchema.shape.item_id.openapi({ example: 1 }),
-    itemName: baseSchema.shape.item_name.openapi({ example: "item name" }),
-    itemPrice: baseSchema.shape.item_price.openapi({ example: 100 }),
-    storeId: baseSchema.shape.store_id.openapi({ example: "store id" }),
-    quantity: baseSchema.shape.quantity.openapi({ example: 1 }),
+    itemId: cartItemsInsertSchema.shape.item_id.openapi({ example: 1 }),
+    itemName: cartItemsInsertSchema.shape.item_name.openapi({
+      example: "item name",
+    }),
+    itemPrice: cartItemsInsertSchema.shape.item_price.openapi({ example: 100 }),
+    storeId: cartItemsInsertSchema.shape.store_id.openapi({
+      example: "store id",
+    }),
+    quantity: cartItemsInsertSchema.shape.quantity.openapi({ example: 1 }),
   })
   .openapi("add_user_cart");
 
@@ -30,13 +26,19 @@ export const cartGetApiSchema = z
         storeName: z.string().max(64).openapi({ example: "store name" }),
         items: z.array(
           z.object({
-            itemId: baseSchema.shape.item_id.openapi({ example: 1 }),
-            itemName: baseSchema.shape.item_name.openapi({
+            itemId: cartItemsInsertSchema.shape.item_id.openapi({ example: 1 }),
+            itemName: cartItemsInsertSchema.shape.item_name.openapi({
               example: "item name",
             }),
-            itemPrice: baseSchema.shape.item_price.openapi({ example: 100 }),
-            storeId: baseSchema.shape.store_id.openapi({ example: "store id" }),
-            quantity: baseSchema.shape.quantity.openapi({ example: 1 }),
+            itemPrice: cartItemsInsertSchema.shape.item_price.openapi({
+              example: 100,
+            }),
+            storeId: cartItemsInsertSchema.shape.store_id.openapi({
+              example: "store id",
+            }),
+            quantity: cartItemsInsertSchema.shape.quantity.openapi({
+              example: 1,
+            }),
           })
         ),
       })
