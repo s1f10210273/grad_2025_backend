@@ -33,9 +33,6 @@ const app = new OpenAPIHono<{
 
 const store = new CookieStore();
 
-// 静的ファイルの提供を設定
-app.use("/uploads/*", serveStatic({ root: "./" }));
-
 app.use(
   "*",
   sessionMiddleware({
@@ -52,10 +49,8 @@ app.use(
   })
 );
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!!");
-});
-
+// 静的ファイルの提供を設定
+app.use("/uploads/*", serveStatic({ root: "./" }));
 // ここにAPIを追加していく
 app.route("/api/users", userRouter);
 app.route("/api/stores", storeRouter);
