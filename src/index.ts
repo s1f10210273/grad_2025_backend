@@ -11,7 +11,6 @@ import { openApiItemTag } from "./routes/openapi/itemRoute.js";
 import { openApiStoreTag } from "./routes/openapi/storeRoute.js";
 import { openApiUserTag } from "./routes/openapi/userRoute.js";
 import { storeRouter } from "./routes/storeRouter.js";
-import { testRouter } from "./routes/testRouter.js";
 import { userRouter } from "./routes/userRouter.js";
 import type { sessionRole } from "./types/roleTypes.js";
 import { serveStatic } from "@hono/node-server/serve-static";
@@ -58,7 +57,6 @@ app.get("/", (c) => {
 });
 
 // ここにAPIを追加していく
-app.route("/test", testRouter);
 app.route("/api/users", userRouter);
 app.route("/api/stores", storeRouter);
 app.route("/api/items", itemRouter);
