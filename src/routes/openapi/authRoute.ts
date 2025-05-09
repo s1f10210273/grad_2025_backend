@@ -45,7 +45,7 @@ export const checkAuthRoute = createRoute({
 });
 
 export const deleteAuthRoute = createRoute({
-  method: "get",
+  method: "delete",
   path: "/deleteAuth",
   request: {},
   responses: {
