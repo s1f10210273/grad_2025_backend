@@ -1,9 +1,8 @@
-import type { MiddlewareHandler } from "hono";
-
 import { crewRegisterApiSchema } from "../schemas/crew.js";
 import { existsCrewByEmail, existsCrewByName } from "../models/crewModel.js";
+import type { AuthContext } from "../types/context.js";
 
-export const validateCrewRegister: MiddlewareHandler = async (c, next) => {
+export const validateCrewRegister = async (c: AuthContext) => {
   try {
     const body = await c.req.json();
 
@@ -40,7 +39,7 @@ export const validateCrewRegister: MiddlewareHandler = async (c, next) => {
       );
     }
 
-    await next();
+    return null;
   } catch (error) {
     return c.json(
       {

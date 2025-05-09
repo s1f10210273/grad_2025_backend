@@ -5,8 +5,13 @@ import { crewCheckAuth } from "../middlewares/crewCheckAuth.js";
 import { findCrewByEmail, registerCrew } from "../models/crewModel.js";
 import type { CrewsInsert } from "../db/crew.js";
 import type { AuthContext } from "../types/context.js";
+import { validateCrewRegister } from "../middlewares/validateCrewRegister.js";
 
 export async function crewRegister(c: AuthContext) {
+  const validateResponce = await validateCrewRegister(c);
+  if (validateResponce) {
+    return validateResponce;
+  }
   const body = await c.req.json();
   const name: string = body.name;
   const email: string = body.email;

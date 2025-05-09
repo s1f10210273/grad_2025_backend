@@ -5,8 +5,14 @@ import { sessionExpirationTime } from "../helpers/const.js";
 import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 import { findUserByEmail, registerUser } from "../models/userModel.js";
 import type { AuthContext } from "../types/context.js";
+import { validateUserRegister } from "../middlewares/validateUserRegister.js";
 
 export async function userRegister(c: AuthContext) {
+  const validateResponce = await validateUserRegister(c);
+  if (validateResponce) {
+    return validateResponce;
+  }
+
   const body = await c.req.json();
   const name: string = body.name;
   const address: string = body.address;

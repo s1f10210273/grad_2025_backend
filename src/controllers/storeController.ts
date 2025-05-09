@@ -5,8 +5,13 @@ import { sessionExpirationTime } from "../helpers/const.js";
 import { storeCheckAuth } from "../middlewares/storeCheckAuth.js";
 import { findStoreByEmail, registerStore } from "../models/storeModel.js";
 import type { AuthContext } from "../types/context.js";
+import { validateStoreRegister } from "../middlewares/validateStoreRegister.js";
 
 export async function storeRegister(c: AuthContext) {
+  const validateResponce = await validateStoreRegister(c);
+  if (validateResponce) {
+    return validateResponce;
+  }
   const body = await c.req.json();
   const name: string = body.name;
   const email: string = body.email;
