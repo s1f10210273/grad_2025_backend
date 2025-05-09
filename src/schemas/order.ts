@@ -40,9 +40,6 @@ export const getOrderHistorySchema = z
             price: cartItemsInsertSchema.shape.item_price.openapi({
               example: 100,
             }),
-            storeId: cartItemsInsertSchema.shape.store_id.openapi({
-              example: "store id",
-            }),
             quantity: cartItemsInsertSchema.shape.quantity.openapi({
               example: 1,
             }),
