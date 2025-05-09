@@ -105,3 +105,54 @@ export const getOrderHistoryRoute = createRoute({
   summary: "注文履歴を表示",
   description: "注文履歴を表示します",
 });
+
+export const postOrderCompleteRoute = createRoute({
+  method: "post",
+  path: "/{orderId}/complete",
+  request: {},
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Order completed successfully",
+    },
+    400: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "invalid order ID",
+    },
+    401: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Unauthorized",
+    },
+    500: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Internal server error",
+    },
+  },
+  tags: [openApiOrderTag.name],
+  summary: "注文を完了する",
+  description: "注文を完了します",
+});

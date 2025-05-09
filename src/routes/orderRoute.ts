@@ -4,9 +4,11 @@ import type { SessionDataTypes } from "../index.js";
 import {
   createOrderRoute,
   getOrderHistoryRoute,
+  postOrderCompleteRoute,
 } from "./openapi/orderRoute.js";
 import {
   getOrderHistory,
+  orderComplete,
   orderRegister,
 } from "../controllers/orderController.js";
 
@@ -18,3 +20,4 @@ export const orderRouter = new OpenAPIHono<{
 
 orderRouter.openapi(createOrderRoute, orderRegister);
 orderRouter.openapi(getOrderHistoryRoute, getOrderHistory);
+orderRouter.openapi(postOrderCompleteRoute, orderComplete);

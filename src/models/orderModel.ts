@@ -89,3 +89,17 @@ export const getOrders = async (userId: string) => {
 
   return { orders: Array.from(orderMap.values()) };
 };
+
+export const createCompleteOrderStatus = async (
+  crewId: string,
+  orderId: number
+) => {
+  await db
+    .update(ordersTable)
+    .set({
+      status_code: orderStatus.receivedAnOrderAndDelivered,
+      crew_id: crewId,
+      delivered_at: new Date(),
+    })
+    .where(and(eq(ordersTable.id, orderId), isNull(ordersTable.deleted_at)));
+};
