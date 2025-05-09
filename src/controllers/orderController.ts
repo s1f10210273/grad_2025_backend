@@ -105,7 +105,7 @@ export const orderComplete = async (c: OrderContext) => {
     }
 
     await createCompleteOrderStatus(crewId, orderId);
-    return c.json("Order completed successfully", 200);
+    return c.json({ message: "Order completed successfully" }, 200);
   } catch (error) {
     console.error("Error fetching order history:", error);
     return c.json({ message: "Internal Server Error" }, 500);
