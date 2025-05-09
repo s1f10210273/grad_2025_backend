@@ -18,6 +18,7 @@ import { orderRouter } from "./routes/orderRoute.js";
 import { openApiOrderTag } from "./routes/openapi/orderRoute.js";
 import { crewRouter } from "./routes/crewRouter.js";
 import { openApiCrewTag } from "./routes/openapi/crewRoute.js";
+import { cors } from "hono/cors";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -46,6 +47,17 @@ app.use(
       // これを使用すると、jsからのアクセスを防ぐことができる
       httpOnly: true,
     },
+  })
+);
+
+app.use(
+  "*",
+  cors({
+    origin: "http://localhost:5173",
+    // cookieを送信するための設定
+    credentials: true,
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
 
