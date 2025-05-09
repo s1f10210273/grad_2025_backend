@@ -86,10 +86,8 @@ export const getOrders = async (userId: string) => {
     store.items.push({
       itemId: row.itemId,
       itemName: row.itemName,
-      itemPrice: row.itemPrice,
-      storeId: row.storeId,
+      price: row.itemPrice,
       quantity: row.quantity,
-      imgUrl: row.imgUrl,
     });
   }
 
