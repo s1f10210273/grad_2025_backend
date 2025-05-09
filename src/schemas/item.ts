@@ -4,7 +4,8 @@ import { itemsInsertSchema } from "../db/item.js";
 export const storeAddItemApiSchema = z
   .object({
     name: itemsInsertSchema.shape.name.openapi({ example: "Item Name" }),
-    price: z.string().openapi({ example: "1000" }),
+    price: itemsInsertSchema.shape.price.openapi({ example: 1000 }),
+    // データベースの型と実際のAPIの型は異なるため
     file: z.any().openapi({
       format: "binary",
       description: "Image file to upload",

@@ -1,6 +1,9 @@
 import { z } from "@hono/zod-openapi";
 import { ordersInsertSchema } from "../db/order.js";
 import { cartItemsInsertSchema } from "../db/cart_item.js";
+import { crewsInsertSchema } from "../db/crew.js";
+import { storeInsertSchema } from "../db/store.js";
+import { userInsertSchema } from "../db/user.js";
 
 export const getOrderHistorySchema = z
   .object({
@@ -14,8 +17,7 @@ export const getOrderHistorySchema = z
     crewId: ordersInsertSchema.shape.crew_id.openapi({
       example: "crew id",
     }),
-    crewName: z
-      .string()
+    crewName: crewsInsertSchema.shape.name
       .openapi({
         example: "crew name",
       })
@@ -25,9 +27,10 @@ export const getOrderHistorySchema = z
     }),
     stores: z.array(
       z.object({
-        //todo: dbの型を使いたい
-        storeId: z.string().max(64).openapi({ example: "store id" }),
-        storeName: z.string().max(64).openapi({ example: "store name" }),
+        storeId: storeInsertSchema.shape.uuid.openapi({ example: "store id" }),
+        storeName: storeInsertSchema.shape.name.openapi({
+          example: "store name",
+        }),
         items: z.array(
           z.object({
             itemId: cartItemsInsertSchema.shape.item_id.openapi({ example: 1 }),
@@ -68,14 +71,13 @@ export const getOrderAvailableSchema = z
     userId: ordersInsertSchema.shape.user_id.openapi({
       example: "user id",
     }),
-    // rodo: dbの型を使いたい
-    userAddress: z.string().openapi({
+    userAddress: userInsertSchema.shape.address.openapi({
       example: "user address",
     }),
     storeId: cartItemsInsertSchema.shape.store_id.openapi({
       example: "store id",
     }),
-    storeName: z.string().openapi({
+    storeName: storeInsertSchema.shape.name.openapi({
       example: "store name",
     }),
     items: z.array(

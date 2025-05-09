@@ -1,5 +1,6 @@
 import { z } from "@hono/zod-openapi";
 import { cartItemsInsertSchema } from "../db/cart_item.js";
+import { storeInsertSchema } from "../db/store.js";
 
 export const cartRegisterApiSchema = z
   .object({
@@ -21,9 +22,10 @@ export const cartGetApiSchema = z
   .object({
     stores: z.array(
       z.object({
-        //todo: dbの型を使いたい
-        storeId: z.string().max(64).openapi({ example: "store id" }),
-        storeName: z.string().max(64).openapi({ example: "store name" }),
+        storeId: storeInsertSchema.shape.uuid.openapi({ example: "store id" }),
+        storeName: storeInsertSchema.shape.name.openapi({
+          example: "store name",
+        }),
         items: z.array(
           z.object({
             itemId: cartItemsInsertSchema.shape.item_id.openapi({ example: 1 }),
