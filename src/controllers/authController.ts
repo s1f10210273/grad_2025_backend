@@ -15,3 +15,19 @@ export async function checkAuth(c: AuthContext) {
     return c.json({ message: "Internal Server Error" }, 500);
   }
 }
+
+export async function deleteAuth(c: AuthContext) {
+  try {
+    const session = c.get("session");
+    const userId = session.get("uuid");
+
+    if (!userId) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+    session.deleteSession();
+    return c.json({ message: "Session deleted successfully" }, 200);
+  } catch (error) {
+    console.error("Error in deleteAuth:", error);
+    return c.json({ message: "Internal Server Error" }, 500);
+  }
+}
