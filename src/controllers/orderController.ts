@@ -7,6 +7,7 @@ import { deleteCartModel, getCurrentCartId } from "../models/cartModel.js";
 import {
   createCompleteOrderStatus,
   createOrder,
+  getAvailableOrders,
   getOrders,
 } from "../models/orderModel.js";
 import { getCartDetailByUserId } from "../models/cartModel.js";
@@ -106,6 +107,29 @@ export const orderComplete = async (c: OrderContext) => {
 
     await createCompleteOrderStatus(crewId, orderId);
     return c.json({ message: "Order completed successfully" }, 200);
+  } catch (error) {
+    console.error("Error fetching order history:", error);
+    return c.json({ message: "Internal Server Error" }, 500);
+  }
+};
+
+export const orderAvailable = async (c: OrderContext) => {
+  try {
+    const authResponse = await crewCheckAuth(c);
+    if (authResponse) {
+      return authResponse;
+    }
+    const session = c.get("session");
+    const crewId = session.get("uuid");
+    if (!crewId) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
+    const orders = await getAvailableOrders();
+    if (!orders) {
+      return c.json({ message: "No available orders" }, 404);
+    }
+    return c.json(orders, 200);
   } catch (error) {
     console.error("Error fetching order history:", error);
     return c.json({ message: "Internal Server Error" }, 500);
