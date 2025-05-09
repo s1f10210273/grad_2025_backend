@@ -13,7 +13,7 @@ import {
 import { getCartDetailByUserId } from "../models/cartModel.js";
 import { crewCheckAuth } from "../middlewares/crewCheckAuth.js";
 
-type OrderContext = Context<{
+export type OrderContext = Context<{
   Variables: {
     session: Session<SessionDataTypes>;
   };
@@ -122,7 +122,7 @@ export const orderAvailable = async (c: OrderContext) => {
     const session = c.get("session");
     const crewId = session.get("uuid");
     if (!crewId) {
-      return c.json({ message: "Unauthorized" }, 401);
+      return c.json({ message: "Unauthorized3" }, 401);
     }
 
     const orders = await getAvailableOrders();
@@ -131,7 +131,7 @@ export const orderAvailable = async (c: OrderContext) => {
     }
     return c.json(orders, 200);
   } catch (error) {
-    console.error("Error fetching order history:", error);
+    console.error("Error fetching available orders:", error);
     return c.json({ message: "Internal Server Error" }, 500);
   }
 };
