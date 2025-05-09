@@ -13,7 +13,7 @@ export const crewCheckAuth = async (c: crewContext) => {
   const session = await c.get("session");
 
   if (!session) {
-    return c.json({ message: "Unauthorized" }, 401);
+    return c.json({ message: "Unauthorized2" }, 401);
   }
 
   const uuid = session.get("uuid");
@@ -31,7 +31,7 @@ export const crewCheckAuth = async (c: crewContext) => {
   ) {
     try {
       session.deleteSession();
-      return c.json({ message: "Unauthorized" }, 401);
+      return c.json({ message: "Unauthorized1" }, 401);
     } catch (e) {
       console.error(e);
       return c.json({ message: "Internal server error" }, 500);

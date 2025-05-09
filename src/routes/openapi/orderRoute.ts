@@ -1,5 +1,8 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { getOrderHistoryApiSchema } from "../../schemas/order.js";
+import {
+  getOrderAvailableApiSchema,
+  getOrderHistoryApiSchema,
+} from "../../schemas/order.js";
 
 export const openApiOrderTag = {
   name: "orders",
@@ -104,4 +107,104 @@ export const getOrderHistoryRoute = createRoute({
   tags: [openApiOrderTag.name],
   summary: "注文履歴を表示",
   description: "注文履歴を表示します",
+});
+
+export const postOrderCompleteRoute = createRoute({
+  method: "post",
+  path: "/{orderId}/complete",
+  request: {},
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Order completed successfully",
+    },
+    400: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "invalid order ID",
+    },
+    401: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Unauthorized",
+    },
+    500: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Internal server error",
+    },
+  },
+  tags: [openApiOrderTag.name],
+  summary: "注文を完了する",
+  description: "注文を完了します",
+});
+
+export const getOrderAvailableRoute = createRoute({
+  method: "get",
+  path: "/available",
+  request: {},
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: getOrderAvailableApiSchema,
+        },
+      },
+      description: "Successful operation",
+    },
+    401: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Unauthorized",
+    },
+    404: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "No available orders found",
+    },
+    500: {
+      content: {
+        "application/json": {
+          schema: z.object({
+            message: z.string(),
+          }),
+        },
+      },
+      description: "Internal server error",
+    },
+  },
+  tags: [openApiOrderTag.name],
+  summary: "注文可能な商品を取得",
+  description: "注文可能な商品を取得します",
 });

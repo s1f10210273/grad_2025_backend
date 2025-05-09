@@ -35,7 +35,7 @@ export async function crewRegister(c: CrewContext) {
 
     const session = await c.get("session");
     await session.set("uuid", crew.uuid);
-    await session.set("role", "store");
+    await session.set("role", "crew");
     await session.set("expirationTime", Date.now() + sessionExpirationTime);
 
     return c.json(
@@ -88,6 +88,7 @@ export async function crewLogin(c: CrewContext) {
       await session.set("uuid", crew.uuid);
       await session.set("role", "crew");
       await session.set("expirationTime", Date.now() + sessionExpirationTime);
+      console.log("session", session.get("role"));
       return c.json(
         {
           message: "Login successful",

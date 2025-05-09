@@ -5,6 +5,12 @@ import { ordersTable } from "../db/order.js";
 import { and, eq, isNull } from "drizzle-orm";
 import { crewsTable } from "../db/crew.js";
 import { cartItemsTable } from "../db/cart_item.js";
+import type {
+  GetOrderAvailable,
+  GetOrderAvailableApiSchema,
+} from "../schemas/order.js";
+import { use } from "hono/jsx";
+import { usersTable } from "../db/user.js";
 
 const orderStatus = {
   notReceivedAnOrder: 1,
@@ -88,4 +94,79 @@ export const getOrders = async (userId: string) => {
   }
 
   return { orders: Array.from(orderMap.values()) };
+};
+
+export const createCompleteOrderStatus = async (
+  crewId: string,
+  orderId: number
+) => {
+  await db
+    .update(ordersTable)
+    .set({
+      status_code: orderStatus.receivedAnOrderAndDelivered,
+      crew_id: crewId,
+      delivered_at: new Date(),
+    })
+    .where(and(eq(ordersTable.id, orderId), isNull(ordersTable.deleted_at)));
+};
+
+export const getAvailableOrders = async () => {
+  const orders = await db
+    .select({
+      orderId: ordersTable.id,
+      orderedAt: ordersTable.created_at,
+      status: ordersTable.status_code,
+      userId: ordersTable.user_id,
+      userAddress: usersTable.address,
+      storeId: storeTable.uuid,
+      storeName: storeTable.name,
+      itemId: itemsTable.id,
+      itemName: itemsTable.name,
+      itemPrice: itemsTable.price,
+      quantity: cartItemsTable.quantity,
+    })
+    .from(ordersTable)
+    .innerJoin(cartItemsTable, eq(ordersTable.cart_id, cartItemsTable.cart_id))
+    .innerJoin(itemsTable, eq(cartItemsTable.item_id, itemsTable.id))
+    .innerJoin(storeTable, eq(itemsTable.store_id, storeTable.uuid))
+    .innerJoin(usersTable, eq(ordersTable.user_id, usersTable.uuid))
+    .where(
+      and(
+        eq(ordersTable.status_code, orderStatus.notReceivedAnOrder),
+        isNull(ordersTable.deleted_at)
+      )
+    );
+  const ordersMap = new Map<string, GetOrderAvailable>();
+
+  for (const row of orders) {
+    const mapKey = `${row.orderId}-${row.storeId}`;
+
+    if (!ordersMap.has(mapKey)) {
+      ordersMap.set(mapKey, {
+        orderId: row.orderId,
+        orderedAt: row.orderedAt,
+        status: row.status,
+        userId: row.userId,
+        userAddress: row.userAddress,
+        storeId: row.storeId,
+        storeName: row.storeName,
+        items: [],
+      });
+    }
+
+    // Mapから現在のキーに対応する注文＋ストアオブジェクトを取得
+    const currentOrderStore = ordersMap.get(mapKey)!;
+
+    if (row.itemId != null) {
+      currentOrderStore.items.push({
+        itemId: row.itemId,
+        itemName: row.itemName,
+        price: row.itemPrice,
+        quantity: row.quantity,
+      });
+    }
+  }
+
+  const formattedOrders: GetOrderAvailable[] = Array.from(ordersMap.values());
+  return { orders: formattedOrders };
 };

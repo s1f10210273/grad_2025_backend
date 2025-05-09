@@ -4,10 +4,16 @@ import type { SessionDataTypes } from "../index.js";
 import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 import { db } from "../db.js";
 import { deleteCartModel, getCurrentCartId } from "../models/cartModel.js";
-import { createOrder, getOrders } from "../models/orderModel.js";
+import {
+  createCompleteOrderStatus,
+  createOrder,
+  getAvailableOrders,
+  getOrders,
+} from "../models/orderModel.js";
 import { getCartDetailByUserId } from "../models/cartModel.js";
+import { crewCheckAuth } from "../middlewares/crewCheckAuth.js";
 
-type OrderContext = Context<{
+export type OrderContext = Context<{
   Variables: {
     session: Session<SessionDataTypes>;
   };
@@ -75,6 +81,57 @@ export const getOrderHistory = async (c: OrderContext) => {
     return c.json(orderHistory, 200);
   } catch (error) {
     console.error("Error fetching order history:", error);
+    return c.json({ message: "Internal Server Error" }, 500);
+  }
+};
+
+export const orderComplete = async (c: OrderContext) => {
+  try {
+    const authResponse = await crewCheckAuth(c);
+    if (authResponse) {
+      return authResponse;
+    }
+
+    const session = c.get("session");
+    const crewId = session.get("uuid");
+
+    if (!crewId) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
+
+    const orderId: number = Number(c.req.param("orderId"));
+
+    if (isNaN(orderId)) {
+      return c.json({ message: "Invalid order ID" }, 400);
+    }
+
+    await createCompleteOrderStatus(crewId, orderId);
+    return c.json({ message: "Order completed successfully" }, 200);
+  } catch (error) {
+    console.error("Error fetching order history:", error);
+    return c.json({ message: "Internal Server Error" }, 500);
+  }
+};
+
+export const orderAvailable = async (c: OrderContext) => {
+  try {
+    const authResponse = await crewCheckAuth(c);
+    if (authResponse) {
+      return authResponse;
+    }
+    const session = c.get("session");
+    const crewId = session.get("uuid");
+    if (!crewId) {
+      return c.json({ message: "Unauthorized3" }, 401);
+    }
+
+    const orders = await getAvailableOrders();
+    if (!orders) {
+      return c.json({ message: "No available orders" }, 404);
+    }
+    return c.json(orders, 200);
+  } catch (error) {
+    console.error("Error fetching available orders:", error);
     return c.json({ message: "Internal Server Error" }, 500);
   }
 };
