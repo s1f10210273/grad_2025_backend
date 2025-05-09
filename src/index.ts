@@ -19,6 +19,8 @@ import { openApiOrderTag } from "./routes/openapi/orderRoute.js";
 import { crewRouter } from "./routes/crewRouter.js";
 import { openApiCrewTag } from "./routes/openapi/crewRoute.js";
 import { cors } from "hono/cors";
+import { authRouter } from "./routes/authRouter.js";
+import { openApiAuthTag } from "./routes/openapi/authRoute.js";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -70,6 +72,7 @@ app.route("/api/items", itemRouter);
 app.route("/api/carts", cartRouter);
 app.route("/api/orders", orderRouter);
 app.route("/api/crews", crewRouter);
+app.route("/api/auth", authRouter);
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));
@@ -93,6 +96,7 @@ app.doc("/api-docs", {
     openApiCartTag,
     openApiOrderTag,
     openApiCrewTag,
+    openApiAuthTag,
   ],
 });
 
