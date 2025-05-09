@@ -1,7 +1,4 @@
-import type { Session } from "@jcs224/hono-sessions";
-import type { Context } from "hono";
 import { db } from "../db.js";
-import type { SessionDataTypes } from "../index.js";
 import { userCheckAuth } from "../middlewares/userCheckAuth.js";
 import {
   createcartItems,
@@ -18,17 +15,12 @@ import {
   hasValidCart,
 } from "../models/cartModel.js";
 import { getItemDetailsByIds } from "../models/itemModel.js";
-import type { CartRegisterApi } from "../schemas/cartItem.js";
+import type { CartRegister } from "../schemas/cartItem.js";
 import { cartItemsTable } from "../db/cart_item.js";
 import { and, eq, isNull } from "drizzle-orm";
+import type { AuthContext } from "../types/context.js";
 
-type CartContext = Context<{
-  Variables: {
-    session: Session<SessionDataTypes>;
-  };
-}>;
-
-export async function cartRegister(c: CartContext) {
+export async function cartRegister(c: AuthContext) {
   try {
     const authResponse = await userCheckAuth(c);
     if (authResponse) {
@@ -79,7 +71,7 @@ export async function cartRegister(c: CartContext) {
   }
 }
 
-export async function getCarts(c: CartContext) {
+export async function getCarts(c: AuthContext) {
   try {
     const authResponse = await userCheckAuth(c);
     if (authResponse) {
@@ -104,7 +96,7 @@ export async function getCarts(c: CartContext) {
   }
 }
 
-export async function updateCarts(c: CartContext) {
+export async function updateCarts(c: AuthContext) {
   try {
     const authResponse = await userCheckAuth(c);
     if (authResponse) {
@@ -146,7 +138,7 @@ export async function updateCarts(c: CartContext) {
   }
 }
 
-export async function deleteCarts(c: CartContext) {
+export async function deleteCarts(c: AuthContext) {
   try {
     const authResponse = await userCheckAuth(c);
     if (authResponse) {
@@ -181,7 +173,7 @@ export async function deleteCarts(c: CartContext) {
   }
 }
 
-export const validateItems = async (c: CartContext) => {
+export const validateItems = async (c: AuthContext) => {
   const body = await c.req.json();
   const items = body.items as Array<{
     itemId: string;
@@ -225,7 +217,7 @@ export const validateItems = async (c: CartContext) => {
 export const updateCartItems = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   cartId: number,
-  items: CartRegisterApi[]
+  items: CartRegister[]
 ) => {
   try {
     const existingItemIds = new Set(
@@ -263,7 +255,7 @@ export const updateCartItems = async (
 export const addNewCartItems = async (
   tx: Parameters<Parameters<typeof db.transaction>[0]>[0],
   cartId: number,
-  items: CartRegisterApi[]
+  items: CartRegister[]
 ) => {
   try {
     // Set を使って存在するアイテムのIDを取得

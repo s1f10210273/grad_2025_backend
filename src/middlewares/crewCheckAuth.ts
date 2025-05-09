@@ -1,15 +1,7 @@
-import type { Session } from "@jcs224/hono-sessions";
-import type { Context } from "hono";
 import { sessionExpirationTime } from "../helpers/const.js";
-import type { SessionDataTypes } from "../index.js";
+import type { AuthContext } from "../types/context.js";
 
-type crewContext = Context<{
-  Variables: {
-    session: Session<SessionDataTypes>;
-  };
-}>;
-
-export const crewCheckAuth = async (c: crewContext) => {
+export const crewCheckAuth = async (c: AuthContext) => {
   const session = await c.get("session");
 
   if (!session) {

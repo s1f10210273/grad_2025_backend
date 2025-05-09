@@ -11,7 +11,6 @@ import { openApiItemTag } from "./routes/openapi/itemRoute.js";
 import { openApiStoreTag } from "./routes/openapi/storeRoute.js";
 import { openApiUserTag } from "./routes/openapi/userRoute.js";
 import { storeRouter } from "./routes/storeRouter.js";
-import { testRouter } from "./routes/testRouter.js";
 import { userRouter } from "./routes/userRouter.js";
 import type { sessionRole } from "./types/roleTypes.js";
 import { serveStatic } from "@hono/node-server/serve-static";
@@ -19,6 +18,9 @@ import { orderRouter } from "./routes/orderRoute.js";
 import { openApiOrderTag } from "./routes/openapi/orderRoute.js";
 import { crewRouter } from "./routes/crewRouter.js";
 import { openApiCrewTag } from "./routes/openapi/crewRoute.js";
+import { cors } from "hono/cors";
+import { authRouter } from "./routes/authRouter.js";
+import { openApiAuthTag } from "./routes/openapi/authRoute.js";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -33,9 +35,6 @@ const app = new OpenAPIHono<{
 }>();
 
 const store = new CookieStore();
-
-// 静的ファイルの提供を設定
-app.use("/uploads/*", serveStatic({ root: "./" }));
 
 app.use(
   "*",
@@ -53,18 +52,27 @@ app.use(
   })
 );
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!!");
-});
+app.use(
+  "*",
+  cors({
+    origin: "http://localhost:5173",
+    // cookieを送信するための設定
+    credentials: true,
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  })
+);
 
+// 静的ファイルの提供を設定
+app.use("/uploads/*", serveStatic({ root: "./" }));
 // ここにAPIを追加していく
-app.route("/test", testRouter);
 app.route("/api/users", userRouter);
 app.route("/api/stores", storeRouter);
 app.route("/api/items", itemRouter);
 app.route("/api/carts", cartRouter);
 app.route("/api/orders", orderRouter);
 app.route("/api/crews", crewRouter);
+app.route("/api/auth", authRouter);
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));
@@ -88,6 +96,7 @@ app.doc("/api-docs", {
     openApiCartTag,
     openApiOrderTag,
     openApiCrewTag,
+    openApiAuthTag,
   ],
 });
 
