@@ -21,6 +21,7 @@ import { openApiCrewTag } from "./routes/openapi/crewRoute.js";
 import { cors } from "hono/cors";
 import { authRouter } from "./routes/authRouter.js";
 import { openApiAuthTag } from "./routes/openapi/authRoute.js";
+import { mcpRouter } from "./routes/mcpRouter.js";
 
 export type SessionDataTypes = {
   uuid: string;
@@ -73,6 +74,7 @@ app.route("/api/carts", cartRouter);
 app.route("/api/orders", orderRouter);
 app.route("/api/crews", crewRouter);
 app.route("/api/auth", authRouter);
+app.route("/mcp", mcpRouter);
 
 // OpenAPIの設定
 app.get("/swagger", swaggerUI({ url: "/api-docs" }));
